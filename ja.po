@@ -1,0 +1,99 @@
+# Japanese translations for wakk package
+# wakk パッケージに対する英訳.
+# Copyright (C) 2022 THE wakk'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the wakk package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: wakk 111\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-01 16:24+0900\n"
+"PO-Revision-Date: 2022-03-01 10:22+0900\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: check_device_status.sh:73 check_device_status.sh:88
+#, sh-format
+msgid "LiDAR:not_found::"
+msgstr "LiDAR:not_found::"
+
+#: check_device_status.sh:78
+#, sh-format
+msgid "LiDAR:nmcli_err::"
+msgstr "LiDAR:nmcli_err::"
+
+#: check_device_status.sh:110
+#, sh-format
+msgid "RealSense:not_found::"
+msgstr "RealSense:not_found::"
+
+#: check_device_status.sh:115
+#, sh-format
+msgid "RealSense:rs_enumerate_devices_command_err::"
+msgstr "RealSense:rs_enumerate_devices_command_err::"
+
+#: check_device_status.sh:133
+#, sh-format
+msgid "ODrive:dev_file_permission_err::"
+msgstr "ODrive:dev_file_permission_err::"
+
+#: check_device_status.sh:137
+#, sh-format
+msgid "ODrive:dev_file_permission_fixed::"
+msgstr "ODrive:dev_file_permission_fixed::"
+
+#: check_device_status.sh:148
+#, sh-format
+msgid "ODrive:lsusb_err::"
+msgstr "ODrive:lsusb_err::"
+
+#: check_device_status.sh:153
+#, sh-format
+msgid "ODrive:dev_file_not_found_err::"
+msgstr "ODrive:dev_file_not_found_err::"
+
+#: check_device_status.sh:158
+#, fuzzy, sh-format
+msgid "ODrive:dev_link_not_found_err::"
+msgstr "ODrive:dev_file_not_found_err::"
+
+#: check_device_status.sh:163
+#, sh-format
+msgid "ODrive:odrive_dev_name_err::"
+msgstr "ODrive:dev_file_not_found_err::"
+
+#: check_device_status.sh:181
+#, sh-format
+msgid "Arduino:dev_file_permission_err::"
+msgstr "Arduino:dev_file_permission_err::"
+
+#: check_device_status.sh:185
+#, sh-format
+msgid "Arduino:dev_file_permission_fixed::"
+msgstr "Arduino:dev_file_permission_fixed::"
+
+#: check_device_status.sh:195
+#, sh-format
+msgid "Arduino:lsusb_err::"
+msgstr "Arduino:lsusb_err::"
+
+#: check_device_status.sh:200
+#, sh-format
+msgid "Arduino:dev_file_not_found_err::"
+msgstr "Arduino:dev_file_not_found_err::"
+
+#: check_device_status.sh:205
+#, fuzzy, sh-format
+msgid "Arduino:dev_link_not_found_err::"
+msgstr "Arduino:dev_file_not_found_err::"
+
+#: check_device_status.sh:210
+#, sh-format
+msgid "Arduino:arduino_dev_name_err::"
+msgstr "Arduino:arduino_dev_name_err::"
