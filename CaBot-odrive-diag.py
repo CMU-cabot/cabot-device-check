@@ -22,20 +22,20 @@ print("finding an odrive...")
 try:
   odrv0 = odrive.find_any(timeout=3)
   if str(odrv0) == "None":
-    print("ODrivetool:not_found_find_any_2::")
+    print("ODrivetool:not_found_find_any::")
     exit_code = 1
   else:
-    print("ODrivetool:found_find_any_2:serial_no:" + str(odrv0.serial_number))
+    print("ODrivetool:found_find_any:serial_no:" + str(odrv0.serial_number))
     if (odrv0.can.error + odrv0.axis0.error + odrv0.axis0.error) == 0:
       print("ODrivetool:odrivetool_have_no_err:" + str(odrv0.serial_number)  + ":")
 #      dump_errors(odrv0)
     else:
-      print("ODrivetool:odrivetool_have_err:" + str(odrv0.serial_number)  + ":" + str(odrv0.can.error + odrv0.axis0.error + odrv0.axis1.error))
+      print("ODrivetool:have_err:NumOfErr:" + str(odrv0.can.error + odrv0.axis0.error + odrv0.axis1.error))
       dump_errors(odrv0)
       exit_code = 1
 
 except Exception as e:
-  print(e)
+  print("ODrivetool:" + e)
   exit_code = 1
 
 sys.exit(exit_code)
