@@ -10,9 +10,6 @@
 
 #### For CaBot Env
 scriptdir=`dirname $0`
-if [ -f ${scriptdir}/.env ]; then
-  source ${scriptdir}/.env
-fi
 
 #### For gettext Env
 source gettext.sh

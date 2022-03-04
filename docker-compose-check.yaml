@@ -1,0 +1,24 @@
+version: "2.3"
+
+services:
+  check:
+    build:
+      context: ./docker/diagnostics
+    environment:
+      - CABOT_REALSENSE_SERIAL_1
+      - CABOT_REALSENSE_SERIAL_2
+      - CABOT_REALSENSE_SERIAL_3
+      - CABOT_CAMERA_NAME_1
+      - CABOT_CAMERA_NAME_2
+      - CABOT_CAMERA_NAME_3
+      - LIDAR_IF
+      - LIDAR_IP
+    command:
+      - "/opt/scripts/check_device_status.sh"
+    volumes:
+# mount script
+      - ./:/opt/scripts
+# required for device
+      - /dev:/dev
+    privileged: true
+    network_mode: host
