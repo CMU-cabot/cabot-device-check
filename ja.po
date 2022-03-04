@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wakk 111\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-01 16:24+0900\n"
-"PO-Revision-Date: 2022-03-01 10:22+0900\n"
+"POT-Creation-Date: 2022-03-04 17:34+0900\n"
+"PO-Revision-Date: 2022-03-04 17:08+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: ja\n"
@@ -18,82 +18,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: check_device_status.sh:73 check_device_status.sh:88
+#: check_device_status.sh:64 check_device_status.sh:91
 #, sh-format
 msgid "LiDAR:not_found::"
 msgstr "LiDAR:not_found::"
 
-#: check_device_status.sh:78
+#: check_device_status.sh:76 check_device_status.sh:95
 #, sh-format
-msgid "LiDAR:nmcli_err::"
-msgstr "LiDAR:nmcli_err::"
+msgid "LiDAR:connected:"
+msgstr "LiDAR:connected:"
+
+#: check_device_status.sh:82
+#, sh-format
+msgid "LiDAR:not_found:"
+msgstr "LiDAR:not_found:"
 
 #: check_device_status.sh:110
 #, sh-format
 msgid "RealSense:not_found::"
 msgstr "RealSense:not_found::"
 
-#: check_device_status.sh:115
+#: check_device_status.sh:127
 #, sh-format
-msgid "RealSense:rs_enumerate_devices_command_err::"
-msgstr "RealSense:rs_enumerate_devices_command_err::"
+msgid "RealSense:connected:"
+msgstr "RealSense:connected:"
 
-#: check_device_status.sh:133
+#: check_device_status.sh:139
 #, sh-format
-msgid "ODrive:dev_file_permission_err::"
-msgstr "ODrive:dev_file_permission_err::"
+msgid "ODrive:odrive_dev_name_err::"
+msgstr "ODrive:odrive_dev_name_err::"
 
-#: check_device_status.sh:137
+#: check_device_status.sh:144
 #, sh-format
-msgid "ODrive:dev_file_permission_fixed::"
-msgstr "ODrive:dev_file_permission_fixed::"
+msgid "ODrive:dev_link_not_found_err::"
+msgstr "ODrive:dev_link_not_found_err::"
 
-#: check_device_status.sh:148
-#, sh-format
-msgid "ODrive:lsusb_err::"
-msgstr "ODrive:lsusb_err::"
-
-#: check_device_status.sh:153
+#: check_device_status.sh:151
 #, sh-format
 msgid "ODrive:dev_file_not_found_err::"
 msgstr "ODrive:dev_file_not_found_err::"
 
 #: check_device_status.sh:158
-#, fuzzy, sh-format
-msgid "ODrive:dev_link_not_found_err::"
-msgstr "ODrive:dev_file_not_found_err::"
-
-#: check_device_status.sh:163
 #, sh-format
-msgid "ODrive:odrive_dev_name_err::"
-msgstr "ODrive:dev_file_not_found_err::"
+msgid "ODrive:lsusb_err::"
+msgstr "ODrive:lsusb_err::"
 
-#: check_device_status.sh:181
+#: check_device_status.sh:162
 #, sh-format
-msgid "Arduino:dev_file_permission_err::"
-msgstr "Arduino:dev_file_permission_err::"
+msgid "ODrive:usb_connected:"
+msgstr "ODrive:usb_connected:"
 
-#: check_device_status.sh:185
+#: check_device_status.sh:175
 #, sh-format
-msgid "Arduino:dev_file_permission_fixed::"
-msgstr "Arduino:dev_file_permission_fixed::"
+msgid "Arduino:arduino_dev_name_err::"
+msgstr "Arduino:arduino_dev_name_err::"
 
-#: check_device_status.sh:195
+#: check_device_status.sh:179
 #, sh-format
-msgid "Arduino:lsusb_err::"
-msgstr "Arduino:lsusb_err::"
+msgid "Arduino:dev_link_not_found_err::"
+msgstr "Arduino:dev_link_not_found_err::"
 
-#: check_device_status.sh:200
+#: check_device_status.sh:184
 #, sh-format
 msgid "Arduino:dev_file_not_found_err::"
 msgstr "Arduino:dev_file_not_found_err::"
 
-#: check_device_status.sh:205
-#, fuzzy, sh-format
-msgid "Arduino:dev_link_not_found_err::"
-msgstr "Arduino:dev_file_not_found_err::"
-
-#: check_device_status.sh:210
+#: check_device_status.sh:190
 #, sh-format
-msgid "Arduino:arduino_dev_name_err::"
-msgstr "Arduino:arduino_dev_name_err::"
+msgid "Arduino:lsusb_err::"
+msgstr "Arduino:lsusb_err::"
+
+#: check_device_status.sh:193
+#, sh-format
+msgid "Arduino:usb_connected:"
+msgstr "Arduino:usb_connected:"

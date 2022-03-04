@@ -5,29 +5,26 @@
 #set -n
 #set -x
 #set -v
-set -e
-set -u
+#set -e
+#set -u
 
 #### For CaBot Env
-if [ -f ~/cabot/docker/.env ]; then
-  source ~/cabot/docker/.env
+scriptdir=`dirname $0`
+if [ -f ${scriptdir}/.env ]; then
+  source ${scriptdir}/.env
 fi
 
 #### For gettext Env
 source gettext.sh
 export TEXTDOMAIN=check_device_status
-#export TEXTDOMAINDIR=${HOME}/locale
-export TEXTDOMAINDIR=${HOME}/Miraikan/locale
+export TEXTDOMAINDIR=${scriptdir}/locale
 
 #### For this script
 SCRIPT_EXIT_STATUS=0
 
 #### For Velodyne LiDAR Env
-# env for test.
-LIDAR_IF=''
-LIDAR_IP=''
-#LIDAR_IF=''
-#LIDAR_IP=''
+: ${LIDAR_IF:-''}
+: ${LIDAR_IP:-''}
 ARPSCAN_LIDAR='Velodyne'
 #ARPSCAN_LIDAR="Velodyne\|OtherLiDARname" # for multi word
 ARPSCAN_BIN=`which arp-scan`
@@ -36,181 +33,188 @@ NMCLI_BIN=`which nmcli`
 #### For RealSense Env
 ARPSCAN_BIN=`which arp-scan`
 RS_ENUMERATE_DEVICES_BIN=`which rs-enumerate-devices`
-#REALSENSE_GENESYS_LSUSB_NAME='xxxx'
-#REALSENSE_INTEL_LSUSB_NAME='xxxx'
+
+: ${CABOT_REALSENSE_SERIAL_1:-''}
+: ${CABOT_REALSENSE_SERIAL_2:-''}
+: ${CABOT_REALSENSE_SERIAL_3:-''}
+: ${CABOT_CAMERA_NAME_1:-''}
+: ${CABOT_CAMERA_NAME_2:-''}
+: ${CABOT_CAMERA_NAME_3:-''}
+
+declare -a cabot_realsense_serial_arr=("${CABOT_REALSENSE_SERIAL_1}" "${CABOT_REALSENSE_SERIAL_2}" "${CABOT_REALSENSE_SERIAL_3}")
+declare -a cabot_camera_name_arr=("${CABOT_CAMERA_NAME_1}" "${CABOT_CAMERA_NAME_2}" "${CABOT_CAMERA_NAME_3}")
 
 #### For Odrive Env
 ODRIVE_DEV_NAME='ttyODRIVE'
 ODRIVE_LSUSB_NAME='Generic ODrive Robotics ODrive v3'
-ODRIVE_IF_LSUSB_NAME='Elecom Co., Ltd ODrive 3.6 CDC Interface'
 
 #### For Arduino Env
 ARDUINO_DEV_NAME='ttyARDUINO_MEGA'
 ARDUINO_LSUSB_NAME='Arduino SA Mega 2560 R3 (CDC ACM)'
 
 #### For Velodyne LiDAR Prg
-lidar_con=()
 
-if [ -z "$LIDAR_IF" ] || [ -z "$LIDAR_IP" ]; then
-  if [ -n "$NMCLI_BIN" ]; then
-    if [ `$NMCLI_BIN -t d | grep ':ethernet:connected:' | wc -l` != '0' ]; then
-      lidar_con=(`$NMCLI_BIN -t d | grep ':ethernet:connected:' | cut -f 1 -d ':'`)
-      num_lidar=0
-      for lidar_scan_if in ${lidar_con[@]}
-      do
-        lidar_scan_ip=''
-        lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $lidar_scan_if | grep "$ARPSCAN_LIDAR"`
-        if [ -n "$lidar_scan_ip" ]; then
-          num_lidar=$((num_lidar += 1))
-          echo "$(eval_gettext "LiDAR:connected:${lidar_scan_if}:${lidar_scan_ip}")"
-        fi
-      done
-      if [ $num_lidar -eq 0 ]; then
-        echo "$(eval_gettext "LiDAR:not_found:${lidar_scan_if}:")"
-        SCRIPT_EXIT_STATUS=1
-#        exit $SCRIPT_EXIT_STATUS
-      fi
-    else
+function check_lidar() {
+  lidar_con=()
+
+  if [ -z "$LIDAR_IF" ] || [ -z "$LIDAR_IP" ]; then
+
+
+    if [ `$NMCLI_BIN -t d | grep ':ethernet:connected:' | wc -l` == '0' ]; then
       echo "$(eval_gettext "LiDAR:not_found::")"
-      SCRIPT_EXIT_STATUS=1
-#      exit $SCRIPT_EXIT_STATUS
+      return 1
     fi
-  else
-    echo "$(eval_gettext "LiDAR:nmcli_err::")"
-    SCRIPT_EXIT_STATUS=1
-#    exit $SCRIPT_EXIT_STATUS
-  fi
-else
-  lidar_scan_ip=''
-  lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $LIDAR_IF $LIDAR_IP | grep "$ARPSCAN_LIDAR"`
-  if [ -n "$lidar_scan_ip" ]; then
-    echo "$(eval_gettext "LiDAR:connected:${LIDAR_IF}:${LIDAR_IP}")"
-  else
-    echo "$(eval_gettext "LiDAR:not_found::")"
-    SCRIPT_EXIT_STATUS=1
-#    exit $SCRIPT_EXIT_STATUS
-  fi
-fi
 
-#exit $SCRIPT_EXIT_STATUS
+    lidar_con=(`$NMCLI_BIN -t d | grep ':ethernet:connected:' | cut -f 1 -d ':'`)
+    num_lidar=0
+    for lidar_scan_if in ${lidar_con[@]}
+    do
+      lidar_scan_ip=''
+      lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $lidar_scan_if | grep "$ARPSCAN_LIDAR"`
+      if [ -n "$lidar_scan_ip" ]; then
+        num_lidar=$((num_lidar += 1))
+        echo -n "$(eval_gettext "LiDAR:connected:")"
+        echo "${lidar_scan_if}:${lidar_scan_ip}"
+      fi
+    done
+
+    if [ $num_lidar -eq 0 ]; then
+      echo -n "$(eval_gettext "LiDAR:not_found:")"
+      echo "${lidar_scan_if}:"
+      return 1
+    fi
+
+  else
+    lidar_scan_ip=''
+    lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $LIDAR_IF $LIDAR_IP | grep "$ARPSCAN_LIDAR"`
+    if [ -z "$lidar_scan_ip" ]; then
+      echo "$(eval_gettext "LiDAR:not_found::")"
+      return 1
+    fi
+
+    echo -n "$(eval_gettext "LiDAR:connected:")"
+    echo "${LIDAR_IF}:${LIDAR_IP}"
+  fi
+  return 0
+}
 
 #### For RealSense Prg
+function check_realsense() {
 
-if [ -n "$RS_ENUMERATE_DEVICES_BIN" ]; then
   realsense_name_arr=()
   realsense_name_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -d '	' -f 1`)
   realsense_serial_arr=()
   realsense_serial_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -d '	' -f 2`)
 
-  if [ ${#realsense_serial_arr[*]} -ne 0 ]; then
-    for ((realsense_serial_num=0; realsense_serial_num < ${#realsense_serial_arr[*]}; realsense_serial_num++))
-    do
-      echo "$(eval_gettext "RealSense:connected:${realsense_name_arr[${realsense_serial_num}]}:${realsense_serial_arr[${realsense_serial_num}]}")"
-    done
-  else
+  if [ ${#realsense_serial_arr[*]} -eq 0 ]; then
     echo "$(eval_gettext "RealSense:not_found::")"
-    SCRIPT_EXIT_STATUS=1
-#    exit $SCRIPT_EXIT_STATUS
+    return 1
   fi
-else
-  echo "$(eval_gettext "RealSense:rs_enumerate_devices_command_err::")"
-  SCRIPT_EXIT_STATUS=1
-#  exit $SCRIPT_EXIT_STATUS
-fi
 
-#exit $SCRIPT_EXIT_STATUS
+  for ((realsense_serial_num=0; realsense_serial_num < ${#realsense_serial_arr[*]}; realsense_serial_num++))
+  do
+    cabot_realsense_serial_tmp=''
+    cabot_camera_name_tmp=''
+    if [ "${CABOT_REALSENSE_SERIAL_1}${CABOT_REALSENSE_SERIAL_2}${CABOT_REALSENSE_SERIAL_3}" != '' ]; then
+      cabot_realsense_serial_arr_num=0
+      for cabot_realsense_serial_tmp in ${cabot_realsense_serial_arr[@]}; do
+        if [ "${cabot_realsense_serial_arr[${cabot_realsense_serial_arr_num}]}" == "${realsense_serial_arr[${realsense_serial_num}]}" ]; then
+          cabot_camera_name_tmp=${cabot_camera_name_arr[${cabot_realsense_serial_arr_num}]}
+	fi
+        let cabot_realsense_serial_arr_num++          
+      done
+    fi
+    echo -n "$(eval_gettext "RealSense:connected:")"
+    echo "${realsense_name_arr[${realsense_serial_num}]}:${realsense_serial_arr[${realsense_serial_num}]}:${cabot_camera_name_tmp}"
+  done
+
+  return 0
+}
 
 #### For Odrive Prg
-odrive_lsusb_res=''
-odrive_if_lsusb_res=''
-if [ -n "$ODRIVE_DEV_NAME" ]; then
-  if [ -L /dev/${ODRIVE_DEV_NAME} ]; then
-    odrive_dev_name_linked=`readlink /dev/${ODRIVE_DEV_NAME}`
-    if [ -a /dev/${odrive_dev_name_linked} ]; then
-      odrive_dev_permission=`ls -l /dev/${odrive_dev_name_linked} | cut -f 1 -d ' ' | sed -E 's/^.//g'`
-      if [ "${odrive_dev_permission}" != "rw-rw-rw-" ]; then
-        chmod 666 /dev/${odrive_dev_name_linked}
-        if [ $? -ne 0 ]; then
-          echo "$(eval_gettext "ODrive:dev_file_permission_err::")"
-          SCRIPT_EXIT_STATUS=1
-#          exit $SCRIPT_EXIT_STATUS
-        else
-          echo "$(eval_gettext "ODrive:dev_file_permission_fixed::")"
-        fi
-      fi
-      odrive_lsusb_res=`lsusb | grep "${ODRIVE_LSUSB_NAME}"`
-      odrive_if_lsusb_res=`lsusb | grep "${ODRIVE_IF_LSUSB_NAME}"`
-      if [ -n "$odrive_lsusb_res" ] && [ -n "$odrive_if_lsusb_res" ];then
-        echo "$(eval_gettext "ODrive:usb_connected:${odrive_lsusb_res}:${odrive_if_lsusb_res}")"
+function check_odrive() {
+  odrive_lsusb_res=''
+  odrive_if_lsusb_res=''
+  if [ -z "$ODRIVE_DEV_NAME" ]; then
+    echo "$(eval_gettext "ODrive:odrive_dev_name_err::")"
+    return 1
+  fi
+
+  if [ ! -L /dev/${ODRIVE_DEV_NAME} ]; then
+    echo "$(eval_gettext "ODrive:dev_link_not_found_err::")"
+    return 1
+  fi
+
+  odrive_dev_name_linked=`readlink /dev/${ODRIVE_DEV_NAME}`
+
+  if [ ! -e /dev/${odrive_dev_name_linked} ]; then
+    echo "$(eval_gettext "ODrive:dev_file_not_found_err::")"
+    return 1
+  fi
+
+  odrive_lsusb_res=`lsusb | grep "${ODRIVE_LSUSB_NAME}"`
+
+  if [ -z "$odrive_lsusb_res" ] && [ -n "$odrive_if_lsusb_res" ];then
+    echo "$(eval_gettext "ODrive:lsusb_err::")"
+    return 1
+  fi
+
+  echo -n "$(eval_gettext "ODrive:usb_connected:")"
+  echo "${odrive_lsusb_res}:${odrive_if_lsusb_res}"
 
 ##### script for ODrivetool.
 
-      else
-        echo "$(eval_gettext "ODrive:lsusb_err::")"
-        SCRIPT_EXIT_STATUS=1
-#        exit $SCRIPT_EXIT_STATUS
-      fi
-    else
-      echo "$(eval_gettext "ODrive:dev_file_not_found_err::")"
-      SCRIPT_EXIT_STATUS=1
-#      exit $SCRIPT_EXIT_STATUS
-    fi
-  else
-    echo "$(eval_gettext "ODrive:dev_link_not_found_err::")"
-    SCRIPT_EXIT_STATUS=1
-#    exit $SCRIPT_EXIT_STATUS
-  fi
-else
-  echo "$(eval_gettext "ODrive:odrive_dev_name_err::")"
-  SCRIPT_EXIT_STATUS=1
-#  exit $SCRIPT_EXIT_STATUS
-fi
-
-#exit $SCRIPT_EXIT_STATUS
+  return 0
+}
 
 #### For Arduino Prg
 ##########################
-arduino_lsusb_res=''
-if [ -n "$ARDUINO_DEV_NAME" ]; then
-  if [ -L /dev/${ARDUINO_DEV_NAME} ]; then
-    arduino_dev_name_linked=`readlink /dev/${ARDUINO_DEV_NAME}`
-    if [ -a /dev/${arduino_dev_name_linked} ]; then
-      arduino_dev_permission=`ls -l /dev/${arduino_dev_name_linked} | cut -f 1 -d ' ' | sed -E 's/^.//g'`
-      if [ "${arduino_dev_permission}" != "rw-rw-rw-" ]; then
-        chmod 666 /dev/${arduino_dev_name_linked}
-        if [ $? -ne 0 ]; then
-          echo "$(eval_gettext "Arduino:dev_file_permission_err::")"
-          SCRIPT_EXIT_STATUS=1
-#          exit $SCRIPT_EXIT_STATUS
-        else
-          echo "$(eval_gettext "Arduino:dev_file_permission_fixed::")"
-        fi
-      fi
-      arduino_lsusb_res=`lsusb | grep "${ARDUINO_LSUSB_NAME}"`
-      if [ -n "$arduino_lsusb_res" ]; then
-        echo "$(eval_gettext "Arduino:usb_connected:${arduino_lsusb_res}:}")"
-
-##### script for Arduino rostopic.
-
-      else
-        echo "$(eval_gettext "Arduino:lsusb_err::")"
-        SCRIPT_EXIT_STATUS=1
-#        exit $SCRIPT_EXIT_STATUS
-      fi
-    else
-      echo "$(eval_gettext "Arduino:dev_file_not_found_err::")"
-      SCRIPT_EXIT_STATUS=1
-#      exit $SCRIPT_EXIT_STATUS
-    fi
-  else
-    echo "$(eval_gettext "Arduino:dev_link_not_found_err::")"
-    SCRIPT_EXIT_STATUS=1
-#    exit $SCRIPT_EXIT_STATUS
+function check_arduino() {
+  arduino_lsusb_res=''
+  if [ -z "$ARDUINO_DEV_NAME" ]; then
+    echo "$(eval_gettext "Arduino:arduino_dev_name_err::")"
+    return 1
   fi
-else
-  echo "$(eval_gettext "Arduino:arduino_dev_name_err::")"
-  SCRIPT_EXIT_STATUS=1
-#  exit $SCRIPT_EXIT_STATUS
+  if [ ! -L /dev/${ARDUINO_DEV_NAME} ]; then
+    echo "$(eval_gettext "Arduino:dev_link_not_found_err::")"
+    return 1
+  fi
+  arduino_dev_name_linked=`readlink /dev/${ARDUINO_DEV_NAME}`
+  if [ ! -e /dev/${arduino_dev_name_linked} ]; then
+    echo "$(eval_gettext "Arduino:dev_file_not_found_err::")"
+    return 1
+  fi
+  arduino_lsusb_res=`lsusb | grep "${ARDUINO_LSUSB_NAME}"`
+
+  if [ -z "$arduino_lsusb_res" ]; then
+    echo "$(eval_gettext "Arduino:lsusb_err::")"
+    return 1
+  fi
+  echo -n "$(eval_gettext "Arduino:usb_connected:")"
+  echo "${arduino_lsusb_res}:}"
+
+  return 0
+}
+
+
+check_lidar
+if [ $? -eq 1 ];then
+    SCRIPT_EXIT_STATUS=1
 fi
-##########################
+
+check_realsense
+if [ $? -eq 1 ];then
+    SCRIPT_EXIT_STATUS=1
+fi
+
+check_odrive
+if [ $? -eq 1 ];then
+    SCRIPT_EXIT_STATUS=1
+fi
+
+check_arduino
+if [ $? -eq 1 ];then
+    SCRIPT_EXIT_STATUS=1
+fi
+
 exit $SCRIPT_EXIT_STATUS
