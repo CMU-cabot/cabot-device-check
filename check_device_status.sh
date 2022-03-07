@@ -10,6 +10,9 @@
 
 #### For CaBot Env
 scriptdir=`dirname $0`
+if [ -f ${scriptdir}/.env ]; then
+  source ${scriptdir}/.env
+fi
 
 #### For gettext Env
 source gettext.sh
@@ -41,6 +44,9 @@ RS_ENUMERATE_DEVICES_BIN=`which rs-enumerate-devices`
 declare -a cabot_realsense_serial_arr=("${CABOT_REALSENSE_SERIAL_1}" "${CABOT_REALSENSE_SERIAL_2}" "${CABOT_REALSENSE_SERIAL_3}")
 declare -a cabot_camera_name_arr=("${CABOT_CAMERA_NAME_1}" "${CABOT_CAMERA_NAME_2}" "${CABOT_CAMERA_NAME_3}")
 
+declare -a cabot_realsense_serial_arr2=("${CABOT_REALSENSE_SERIAL_1}" "${CABOT_REALSENSE_SERIAL_2}" "${CABOT_REALSENSE_SERIAL_3}")
+declare -a cabot_camera_name_arr2=("${CABOT_CAMERA_NAME_1}" "${CABOT_CAMERA_NAME_2}" "${CABOT_CAMERA_NAME_3}")
+
 #### For Odrive Env
 ODRIVE_DEV_NAME='ttyODRIVE'
 ODRIVE_LSUSB_NAME='Generic ODrive Robotics ODrive v3'
@@ -55,7 +61,6 @@ function check_lidar() {
   lidar_con=()
 
   if [ -z "$LIDAR_IF" ] || [ -z "$LIDAR_IP" ]; then
-
 
     if [ `$NMCLI_BIN -t d | grep ':ethernet:connected:' | wc -l` == '0' ]; then
       echo "$(eval_gettext "LiDAR:not_found::")"
@@ -83,7 +88,7 @@ function check_lidar() {
 
   else
     lidar_scan_ip=''
-    lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $LIDAR_IF $LIDAR_IP | grep "$ARPSCAN_LIDAR"`
+    lidar_scan_ip=`$ARPSCAN_BIN -x -I $LIDAR_IF $LIDAR_IP | grep "$ARPSCAN_LIDAR"`
     if [ -z "$lidar_scan_ip" ]; then
       echo "$(eval_gettext "LiDAR:not_found::")"
       return 1
@@ -99,9 +104,10 @@ function check_lidar() {
 function check_realsense() {
 
   realsense_name_arr=()
-  realsense_name_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -d '	' -f 1`)
+  realsense_name_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -f 1`)
+
   realsense_serial_arr=()
-  realsense_serial_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -d '	' -f 2`)
+  realsense_serial_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -f 2`)
 
   if [ ${#realsense_serial_arr[*]} -eq 0 ]; then
     echo "$(eval_gettext "RealSense:not_found::")"
@@ -112,11 +118,16 @@ function check_realsense() {
   do
     cabot_realsense_serial_tmp=''
     cabot_camera_name_tmp=''
-    if [ "${CABOT_REALSENSE_SERIAL_1}${CABOT_REALSENSE_SERIAL_2}${CABOT_REALSENSE_SERIAL_3}" != '' ]; then
+    ifstmp=$IFS
+    rs_serials="$(IFS=""; echo "${cabot_realsense_serial_arr[*]}")"
+    IFS=$ifstmp
+    if [ "${rs_serials}" != '' ]; then
       cabot_realsense_serial_arr_num=0
       for cabot_realsense_serial_tmp in ${cabot_realsense_serial_arr[@]}; do
-        if [ "${cabot_realsense_serial_arr[${cabot_realsense_serial_arr_num}]}" == "${realsense_serial_arr[${realsense_serial_num}]}" ]; then
+        if [ "${cabot_realsense_serial_tmp}" == "${realsense_serial_arr[${realsense_serial_num}]}" ]; then
           cabot_camera_name_tmp=${cabot_camera_name_arr[${cabot_realsense_serial_arr_num}]}
+          declare cabot_realsense_serial_arr2[${cabot_realsense_serial_arr_num}]
+          declare cabot_camera_name_arr2[${cabot_realsense_serial_arr_num}]
 	fi
         let cabot_realsense_serial_arr_num++          
       done
@@ -124,6 +135,15 @@ function check_realsense() {
     echo -n "$(eval_gettext "RealSense:connected:")"
     echo "${realsense_name_arr[${realsense_serial_num}]}:${realsense_serial_arr[${realsense_serial_num}]}:${cabot_camera_name_tmp}"
   done
+
+  ifstmp=$IFS
+  rs_serials2="$(IFS=""; echo "${cabot_realsense_serial_arr2[*]}")"
+  IFS=$ifstmp
+  if [ "${rs_serials2}" != '' ]; then
+    echo -n "$(eval_gettext "RealSense:not_found:")"
+    echo "${cabot_realsense_serial_arr2[*]}:${cabot_camera_name_arr2[*]}"
+    return 1
+  fi
 
   return 0
 }

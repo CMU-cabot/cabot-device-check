@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wakk 111\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-04 17:34+0900\n"
+"POT-Creation-Date: 2022-03-07 17:33+0900\n"
 "PO-Revision-Date: 2022-03-04 17:08+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,77 +18,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: check_device_status.sh:64 check_device_status.sh:91
+#: check_device_status.sh:66 check_device_status.sh:93
 #, sh-format
 msgid "LiDAR:not_found::"
 msgstr "LiDAR:not_found::"
 
-#: check_device_status.sh:76 check_device_status.sh:95
+#: check_device_status.sh:78 check_device_status.sh:97
 #, sh-format
 msgid "LiDAR:connected:"
 msgstr "LiDAR:connected:"
 
-#: check_device_status.sh:82
+#: check_device_status.sh:84
 #, sh-format
 msgid "LiDAR:not_found:"
 msgstr "LiDAR:not_found:"
 
-#: check_device_status.sh:110
+#: check_device_status.sh:113 check_device_status.sh:143
 #, sh-format
 msgid "RealSense:not_found::"
 msgstr "RealSense:not_found::"
 
-#: check_device_status.sh:127
+#: check_device_status.sh:135
 #, sh-format
 msgid "RealSense:connected:"
 msgstr "RealSense:connected:"
 
-#: check_device_status.sh:139
+#: check_device_status.sh:156
 #, sh-format
 msgid "ODrive:odrive_dev_name_err::"
 msgstr "ODrive:odrive_dev_name_err::"
 
-#: check_device_status.sh:144
+#: check_device_status.sh:161
 #, sh-format
 msgid "ODrive:dev_link_not_found_err::"
 msgstr "ODrive:dev_link_not_found_err::"
 
-#: check_device_status.sh:151
+#: check_device_status.sh:168
 #, sh-format
 msgid "ODrive:dev_file_not_found_err::"
 msgstr "ODrive:dev_file_not_found_err::"
 
-#: check_device_status.sh:158
+#: check_device_status.sh:175
 #, sh-format
 msgid "ODrive:lsusb_err::"
 msgstr "ODrive:lsusb_err::"
 
-#: check_device_status.sh:162
+#: check_device_status.sh:179
 #, sh-format
 msgid "ODrive:usb_connected:"
 msgstr "ODrive:usb_connected:"
 
-#: check_device_status.sh:175
+#: check_device_status.sh:192
 #, sh-format
 msgid "Arduino:arduino_dev_name_err::"
 msgstr "Arduino:arduino_dev_name_err::"
 
-#: check_device_status.sh:179
+#: check_device_status.sh:196
 #, sh-format
 msgid "Arduino:dev_link_not_found_err::"
 msgstr "Arduino:dev_link_not_found_err::"
 
-#: check_device_status.sh:184
+#: check_device_status.sh:201
 #, sh-format
 msgid "Arduino:dev_file_not_found_err::"
 msgstr "Arduino:dev_file_not_found_err::"
 
-#: check_device_status.sh:190
+#: check_device_status.sh:207
 #, sh-format
 msgid "Arduino:lsusb_err::"
 msgstr "Arduino:lsusb_err::"
 
-#: check_device_status.sh:193
+#: check_device_status.sh:210
 #, sh-format
 msgid "Arduino:usb_connected:"
 msgstr "Arduino:usb_connected:"
+
+#, fuzzy, sh-format
+#~ msgid "RealSense:not_found:"
+#~ msgstr "RealSense:not_found::"
