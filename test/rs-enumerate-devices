@@ -1,0 +1,25 @@
+#!/bin/bash
+
+: ${RS_TEST_CASE:=0}
+
+if [ $RS_TEST_CASE -eq 1 ]; then
+    echo "Device Name                   Serial Number       Firmware Version    "
+fi
+
+if [ $RS_TEST_CASE -eq 2 ]; then
+    echo "Device Name                   Serial Number       Firmware Version    "
+    echo "Intel RealSense D455          141322250657        05.13.00.50  "
+fi
+
+if [ $RS_TEST_CASE -eq 3 ]; then
+    echo "Device Name                   Serial Number       Firmware Version    "
+    echo "Intel RealSense D455          141322250657        05.13.00.50         "
+    echo "Intel RealSense D435          819112073120        05.13.00.50         "
+fi
+    
+if [ $RS_TEST_CASE -eq 4 ]; then
+    echo "Device Name                   Serial Number       Firmware Version    "
+    echo "Intel RealSense D455          141322250657        05.13.00.50         "
+    echo "Intel RealSense D435          819112073120        05.13.00.50         "
+    echo "Intel RealSense D435          933322072143        05.13.00.50     "
+fi

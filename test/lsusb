@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Generic ODrive Robotics ODrive v3"
+echo "Arduino SA Mega 2560 R3 (CDC ACM)"

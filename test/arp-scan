@@ -1,0 +1,11 @@
+#!/bin/bash
+
+: ${AS_TEST_CASE:=0}
+
+if [ $AS_TEST_CASE -eq 1 ]; then
+   :
+fi
+
+if [ $AS_TEST_CASE -eq 2 ]; then
+   echo "192.168.1.201	60:76:88:10:4a:b9	Velodyne"
+fi
