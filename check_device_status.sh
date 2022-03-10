@@ -56,7 +56,6 @@ ARDUINO_DEV_NAME='ttyARDUINO_MEGA'
 ARDUINO_LSUSB_NAME='Arduino SA Mega 2560 R3 (CDC ACM)'
 
 #### For Velodyne LiDAR Prg
-
 function check_lidar() {
   lidar_con=()
 
@@ -102,12 +101,14 @@ function check_lidar() {
 
 #### For RealSense Prg
 function check_realsense() {
-
+  ifstmp=$IFS
+  IFS=$'\n'
   realsense_name_arr=()
   realsense_name_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -f 1`)
 
   realsense_serial_arr=()
   realsense_serial_arr=(`$RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -f 2`)
+  IFS=$ifstmp
 
   if [ ${#realsense_serial_arr[*]} -eq 0 ]; then
     echo "$(eval_gettext "RealSense:not_found::")"
@@ -140,7 +141,7 @@ function check_realsense() {
   rs_serials2="$(IFS=""; echo "${cabot_realsense_serial_arr2[*]}")"
   IFS=$ifstmp
   if [ "${rs_serials2}" != '' ]; then
-    echo -n "$(eval_gettext "RealSense:not_found:")"
+    echo -n "$(eval_gettext "RealSense:not_found::")"
     echo "${cabot_realsense_serial_arr2[*]}:${cabot_camera_name_arr2[*]}"
     return 1
   fi
