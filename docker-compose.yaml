@@ -3,7 +3,7 @@ version: "2.3"
 services:
   check:
     build:
-      context: ./docker/diagnostics
+      context: .
     environment:
       - CABOT_REALSENSE_SERIAL_1
       - CABOT_REALSENSE_SERIAL_2
@@ -15,10 +15,7 @@ services:
       - LIDAR_IP
     command:
       - "/opt/scripts/check_device_status.sh"
-#      - "-j"
     volumes:
-# mount script
-      - ./:/opt/scripts
 # required for device
       - /dev:/dev
       - /run/udev:/run/udev:ro
@@ -34,7 +31,7 @@ services:
     
   test:
     build:
-      context: ./docker/diagnostics
+      context: .
     environment:
       - CABOT_REALSENSE_SERIAL_1
       - CABOT_REALSENSE_SERIAL_2
@@ -46,10 +43,7 @@ services:
       - LIDAR_IP
     command:
       - "/opt/scripts/check_device_status.sh"
-#      - "-j"
     volumes:
-# mount script
-      - ./:/opt/scripts
 # required for device
       - /run/udev:/run/udev:ro
       - /run/dbus:/run/dbus:ro

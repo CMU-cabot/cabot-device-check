@@ -47,3 +47,7 @@ RUN apt update && \
 	&& \
 	apt clean && \
 	rm -rf /var/lib/apt/lists/*
+
+COPY check_device_status.sh /opt/scripts/
+COPY .env /opt/scripts/
+COPY test /opt/scripts/test

@@ -405,7 +405,8 @@ if [[ $output == "json" ]]; then
     jq -n --arg     "cabot_device_status" $SCRIPT_EXIT_STATUS \
           --arg     "lang"                "ja_JP.UTF-8" \
           --argjson "devices"             "$inner" \
-	  '$ARGS.named'
+	  -M \
+          '$ARGS.named'
 fi
 
 exit $SCRIPT_EXIT_STATUS
