@@ -1,1 +1,3 @@
+#!/bin/bash
+
 echo "enp8s0:ethernet:connected:"

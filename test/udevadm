@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "dummy output of udevadm ($0 $1 $2)"
+
+if [[ "$2" == "/dev/ttyDUMMY2" ]]; then
+    echo "E: ID_VENDOR_FROM_DATABASE=Silicon Labs"
+    echo "E: ID_MODEL_FROM_DATABASE=CP210x UART Bridge"
+fi
+
+if [[ "$2" == "/dev/ttyDUMMY0" ]]; then
+   echo "E: ID_VENDOR_FROM_DATABASE=Generic"
+   echo "E: ID_MODEL_FROM_DATABASE=ODrive Robotics ODrive v3"
+fi
+
+if [[ "$2" == "/dev/ttyDUMMY1" ]]; then
+    echo "E: ID_VENDOR_FROM_DATABASE=Arduino SA"
+    echo "E: ID_MODEL_FROM_DATABASE=Mega 2560 R3 (CDC ACM)"
+fi

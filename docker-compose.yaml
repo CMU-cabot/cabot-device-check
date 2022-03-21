@@ -15,11 +15,20 @@ services:
       - LIDAR_IP
     command:
       - "/opt/scripts/check_device_status.sh"
-      - "-j"
+#      - "-j"
     volumes:
 # mount script
       - ./:/opt/scripts
 # required for device
-      - /dev:/dev
+      - /dev:/dev:ro
+      - /run/udev:/run/udev:ro
+      - /run/dbus:/run/dbus:ro
     privileged: true
     network_mode: host
+
+  checkj:
+    extends: check
+    command:
+      - "/opt/scripts/check_device_status.sh"
+      - "-j"
+    
