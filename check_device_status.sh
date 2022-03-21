@@ -111,6 +111,9 @@ if [[ -n $CABOT_REALSENSE_SERIAL_3 ]]; then
     cabot_realsense_serial_map[$CABOT_REALSENSE_SERIAL_3]=$CABOT_CAMERA_NAME_3
 fi
 
+#### Jetson Mate
+: ${CABOT_JETSON_CONFIG:-''}
+
 
 #### For Odrive Env
 ODRIVE_DEV_NAME='ttyODRIVE'
@@ -269,6 +272,44 @@ function check_tty() {
   return 0
 }
 
+function join_by {
+  local d=${1-} f=${2-}
+  if shift 2; then
+    printf %s "$f" "${@/#/$d}"
+  fi
+}
+function check_jetson_mate() {
+    local -n dict=$1
+    tempifs=$IFS
+    IFS=' '
+    error=0
+    found_ips=()
+    for conf in $CABOT_JETSON_CONFIG; do
+        IFS=':'
+        items=($conf)
+        ipaddress=${items[1]}
+	ping -c 1 -W 0.1 $ipaddress > /dev/null
+	if [ $? -ne 0 ]; then
+	    found_ips+=(${ipaddress}-"X")
+	    error=1
+	else
+	    found_ips+=(${ipaddress}-"O")
+	fi
+    done
+    dict["device_status"]=$error
+    dict["device_ip"]=$(join_by '\n' ${found_ips[@]})
+    if [ $error -eq 0 ]; then
+	dict["device_message"]="$(eval_gettext "jetson_found")"
+	echo "$(eval_gettext "jetson_found")"
+    else
+	dict["device_message"]="$(eval_gettext "jetson_not_found")"
+	echo "$(eval_gettext "jetson_not_found")"
+    fi
+    IFS=$tempifs
+    return $error
+}
+
+
 ## redirect output to /dev/null if $output is json
 redirect=
 if [[ $output == "json" ]]; then
@@ -283,23 +324,33 @@ eval "check_lidar $redirect"
 SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 
 
-## REALSENSE
-## no serial number is specified  then expects one realsense
-readarray realsense_arr< <($RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -f1,2)
-if [ ${#cabot_realsense_serial_map[*]} -eq 0 ]; then
-    declare -A realsense_info
-    make_json_dict realsense_info "Camera" "" ""
-    jsons+=(realsense_info)
-    eval "check_realsense_without_serial realsense_info realsense_arr $redirect"
-    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
-else ## otherwise, check each serial number
-    for serial in ${!cabot_realsense_serial_map[*]}; do
-	declare -A realsense_info_$serial
-	make_json_dict realsense_info_$serial "Camera" "" ${cabot_realsense_serial_map[$serial]}
-	jsons+=(realsense_info_$serial)
-	eval "check_realsense_with_serial realsense_info_$serial realsense_arr $serial  $redirect"
+## if there is no jetson mate check realsense on host machine
+if [[ -z $CABOT_JETSON_CONFIG ]]; then
+    ## REALSENSE
+    ## no serial number is specified  then expects one realsense
+    readarray realsense_arr< <($RS_ENUMERATE_DEVICES_BIN -s | tail -n +2 | sed -E 's/ {2,}/\t/g' | cut -f1,2)
+    if [ ${#cabot_realsense_serial_map[*]} -eq 0 ]; then
+	declare -A realsense_info
+	make_json_dict realsense_info "Camera" "" ""
+	jsons+=(realsense_info)
+	eval "check_realsense_without_serial realsense_info realsense_arr $redirect"
 	SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
-    done
+    else ## otherwise, check each serial number
+	for serial in ${!cabot_realsense_serial_map[*]}; do
+	    declare -A realsense_info_$serial
+	    make_json_dict realsense_info_$serial "Camera" "" ${cabot_realsense_serial_map[$serial]}
+	    jsons+=(realsense_info_$serial)
+	    eval "check_realsense_with_serial realsense_info_$serial realsense_arr $serial  $redirect"
+	    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+	done
+    fi
+else
+    ## otherwise check jetson
+    declare -A jetson_info
+    make_json_dict jetson_info "Jetson Mate" "" ""
+    jsons+=(jetson_info)
+    eval "check_jetson_mate jetson_info $redirect"
+    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 fi
 
 ## ODRIVE
@@ -334,6 +385,8 @@ else
 	    eval "check_tty mc_info $name $tty_name $redirect"
 	else
 	    echo "$(eval_gettext "no_micro_controller_found")"
+	    mc_info["device_status"]=1
+	    mc_info["device_message"]="$(eval_gettext "no_micro_controller_found")"
 	    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+1))
 	fi
     fi
