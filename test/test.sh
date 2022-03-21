@@ -10,7 +10,8 @@ pwd=`dirname $0`
 cd $pwd
 scriptdir=$(pwd)
 
-declare -a testcases=("1:1:1:1" "1:2:1:1" "1:3:1:1" "1:4:1:1" "2:1:1:1" "2:2:1:0" "2:3:1:0" "2:4:1:0" "1:1:2:1" "1:2:2:1" "1:3:2:1" "1:4:2:1" "2:1:2:1" "2:2:2:1" "2:3:2:1" "2:4:2:0")
+declare -a testcases=("1:1:1:2" "1:2:1:1" "1:3:1:2" "1:4:1:2" "2:1:1:1" "2:2:1:0" "2:3:1:1" "2:4:1:1" "1:1:2:2" "1:2:2:2" "1:3:2:2" "1:4:2:1" "2:1:2:1" "2:2:2:1" "2:3:2:1" "2:4:2:0")
+
 
 ODRIVE_DEV_NAME='ttyODRIVE'
 dummy0=0
@@ -30,6 +31,8 @@ fi
 
 export PATH=$(pwd):$PATH
 
+mkdir -p $scriptdir/json
+
 for testcase in ${testcases[*]}
 do
     IFS=":"; declare -a target=(${testcase[*]})
@@ -41,7 +44,8 @@ do
     source ./env.sh
 
     expect=${target[3]}
-    OUTPUT=$($scriptdir/../check_device_status.sh)
+    jsonfile=$scriptdir/json/${AS_TEST_CASE}-${RS_TEST_CASE}-${ENV_TEST_CASE}.json
+    OUTPUT=$($scriptdir/../check_device_status.sh -j > $jsonfile)
     result=$?
     if [ $result -eq $expect ]; then
 	echo "-------Text case $testcase (result=$result, expect=$expect): SUCCESS ----"
@@ -49,6 +53,12 @@ do
     else
 	red  "-------Text case $testcase (result=$result, expect=$expect): FAIL -------"
 	red $OUTPUT
+    fi
+
+    # check if all device has message in json
+    if [ $(jq '.devices[].device_message' $jsonfile | grep \"\" | wc -l) -ne 0 ]; then
+	red "some device_message is missing in $jsonfile"
+	jq '.devices[] | select(.device_message=="")' $jsonfile
     fi
 done
 
