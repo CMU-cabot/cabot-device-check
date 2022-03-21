@@ -15,6 +15,7 @@ services:
       - LIDAR_IP
     command:
       - "/opt/scripts/check_device_status.sh"
+      - "-j"
     volumes:
 # mount script
       - ./:/opt/scripts

@@ -8,6 +8,39 @@
 #set -e
 #set -u
 
+function help() {
+    echo "Usage: "
+    echo ""
+    echo "-h         show this help "
+    echo "-j         output in json format"
+}
+
+function tojson {
+    local -n dict=$1
+
+    for i in "${!dict[@]}"
+    do
+	echo "$i"
+	echo "${dict[$i]}"
+    done |
+	jq -n -R 'reduce inputs as $i ({}; . + { ($i): (input|(tonumber? // .)) })'
+}
+
+
+output=normal
+
+while getopts "hj" opt; do
+    case $opt in
+	h)
+	    help
+	    exit
+	    ;;
+	j)
+	    output=json
+	    ;;
+    esac
+done
+
 #### For CaBot Env
 scriptdir=`dirname $0`
 if [ -f ${scriptdir}/.env ]; then
@@ -21,7 +54,6 @@ export TEXTDOMAINDIR=${scriptdir}/locale
 
 #### For this script
 SCRIPT_EXIT_STATUS=0
-OUTPUT_JSON="check_device_status_res.json"
 ARPSCAN_BIN=`which arp-scan`
 
 #### For Velodyne LiDAR Env
@@ -373,152 +405,36 @@ function check_arduino() {
 }
 
 function output_json() {
-  echo "{" > $OUTPUT_JSON 
-  echo "    \"cabot_device_status\": ${SCRIPT_EXIT_STATUS}," >> $OUTPUT_JSON
-  echo "    \"lang\": \"${LANG}\"," >> $OUTPUT_JSON
-
-  echo "    \"devices\": [" >> $OUTPUT_JSON
-###JSON LiDAR
-  echo "        {" >> $OUTPUT_JSON
-  device_arr_num=1
-  for key in "${!lidar_device_info[@]}"; do
-    if [ ${key} == "device_status" ];then
-      echo "\"${key}\": ${lidar_device_info[${key}]}" >> $OUTPUT_JSON
-    else
-      echo -n "\"${key}\": \"${lidar_device_info[${key}]}\"" >> $OUTPUT_JSON
+    lidar=$(tojson lidar_device_info)
+    rs1=$(tojson realsense_device_info_1)
+    if [[ ${realsense_device_info_2["device_serial"]} != "" ]]; then
+	rs2=$(tojson realsense_device_info_2)
     fi
-    if [ ${device_arr_num} -eq ${#lidar_device_info[@]} ];then
-      echo "" >> $OUTPUT_JSON
-    else
-      echo "," >> $OUTPUT_JSON
+    if [[ ${realsense_device_info_3["device_serial"]} != "" ]]; then
+	rs3=$(tojson realsense_device_info_3)
     fi
-    let device_arr_num++
-  done
-  echo "        }," >> $OUTPUT_JSON
-
-#JSON Camera 1
-  echo "        {" >> $OUTPUT_JSON
-  device_arr_num=1
-  for key in "${!realsense_device_info_1[@]}"; do
-    if [ ${key} == "device_status" ];then
-      echo "\"${key}\": ${realsense_device_info_1[${key}]}" >> $OUTPUT_JSON
-    else
-      echo -n "\"${key}\": \"${realsense_device_info_1[${key}]}\"" >> $OUTPUT_JSON
-    fi
-    if [ ${device_arr_num} -eq ${#realsense_device_info_1[@]} ];then
-      echo "" >> $OUTPUT_JSON
-    else
-      echo "," >> $OUTPUT_JSON
-    fi
-    let device_arr_num++
-  done
-  echo "        }," >> $OUTPUT_JSON
-
-#JSON Camera 2
-  if [ ${realsense_device_info_2["device_serial"]} != "" ]; then
-    echo "        {" >> $OUTPUT_JSON
-    device_arr_num=1
-    for key in "${!realsense_device_info_2[@]}"; do
-      if [ ${key} == "device_status" ];then
-        echo "\"${key}\": ${realsense_device_info_2[${key}]}" >> $OUTPUT_JSON
-      else
-        echo -n "\"${key}\": \"${realsense_device_info_2[${key}]}\"" >> $OUTPUT_JSON
-      fi
-      if [ ${device_arr_num} -eq ${#realsense_device_info_2[@]} ];then
-        echo "" >> $OUTPUT_JSON
-      else
-        echo "," >> $OUTPUT_JSON
-      fi
-      let device_arr_num++
-    done
-    echo "        }," >> $OUTPUT_JSON
-  fi
-
-#JSON Camera 3
-  if [ ${realsense_device_info_3["device_serial"]} != "" ]; then
-    echo "        {" >> $OUTPUT_JSON
-    device_arr_num=1
-    for key in "${!realsense_device_info_3[@]}"; do
-      if [ ${key} == "device_status" ];then
-        echo "\"${key}\": ${realsense_device_info_3[${key}]}" >> $OUTPUT_JSON
-      else
-        echo -n "\"${key}\": \"${realsense_device_info_3[${key}]}\"" >> $OUTPUT_JSON
-      fi
-      if [ ${device_arr_num} -eq ${#realsense_device_info_3[@]} ];then
-        echo "" >> $OUTPUT_JSON
-      else
-        echo "," >> $OUTPUT_JSON
-      fi
-      let device_arr_num++
-    done
-    echo "        }," >> $OUTPUT_JSON
-  fi
-
-#JSON ODrive
-  echo "        {" >> $OUTPUT_JSON
-  device_arr_num=1
-  for key in "${!odrive_device_info[@]}"; do
-    if [ ${key} == "device_status" ];then
-      echo "\"${key}\": ${odrive_device_info[${key}]}" >> $OUTPUT_JSON
-    else
-      echo -n "\"${key}\": \"${odrive_device_info[${key}]}\"" >> $OUTPUT_JSON
-    fi
-    if [ ${device_arr_num} -eq ${#odrive_device_info[@]} ];then
-      echo "" >> $OUTPUT_JSON
-    else
-      echo "," >> $OUTPUT_JSON
-    fi
-    let device_arr_num++
-  done
-  echo "        }," >> $OUTPUT_JSON
-
-#JSON Arduino
-  echo "        {" >> $OUTPUT_JSON
-  device_arr_num=1
-  for key in "${!arduino_device_info[@]}"; do
-    if [ ${key} == "device_status" ];then
-      echo "\"${key}\": ${arduino_device_info[${key}]}" >> $OUTPUT_JSON
-    else
-      echo -n "\"${key}\": \"${arduino_device_info[${key}]}\"" >> $OUTPUT_JSON
-    fi
-    if [ ${device_arr_num} -eq ${#arduino_device_info[@]} ];then
-      echo "" >> $OUTPUT_JSON
-    else
-      echo "," >> $OUTPUT_JSON
-    fi
-    let device_arr_num++
-  done
-  echo "        }" >> $OUTPUT_JSON
-####
-  echo "    ]" >> $OUTPUT_JSON 
-  echo "}" >> $OUTPUT_JSON 
-
-  return 0
+    odrive=$(tojson odrive_device_info)
+    arduino=$(tojson arduino_device_info)
+    inner=$(echo $lidar $rs1 $rs2 $rs3 $odrive $arduino | jq -s .)
+    jq -n --arg "cabot_device_status" $SCRIPT_EXIT_STATUS --arg "lang" "ja_JP.UTF-8" --argjson devices "$inner" '$ARGS.named'
+    return 0
 }
 
-check_lidar
-if [ $? -eq 1 ];then
-    SCRIPT_EXIT_STATUS=1
-fi
 
-check_realsense
-if [ $? -eq 1 ];then
-    SCRIPT_EXIT_STATUS=1
+redirect=
+if [[ $output == "json" ]]; then
+    redirect="> /dev/null"
 fi
-
-check_odrive
-if [ $? -eq 1 ];then
-    SCRIPT_EXIT_STATUS=1
-fi
-
-check_arduino
-if [ $? -eq 1 ];then
-    SCRIPT_EXIT_STATUS=1
-fi
-
-output_json
-if [ $? -eq 1 ];then
-    SCRIPT_EXIT_STATUS=1
+eval "check_lidar $redirect"
+SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+eval "check_realsense $redirect"
+SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+eval "check_odrive $redirect"
+SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+eval "check_arduino $redirect"
+SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+if [[ $output == "json" ]]; then
+    output_json
 fi
 
 exit $SCRIPT_EXIT_STATUS

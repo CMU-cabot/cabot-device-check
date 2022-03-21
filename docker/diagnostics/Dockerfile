@@ -24,6 +24,7 @@ RUN apt update && \
 	python3-pip \
 	python-is-python3 \
 	usbutils \
+	jq \
 	&& \
 	apt clean && \
 	rm -rf /var/lib/apt/lists/*
