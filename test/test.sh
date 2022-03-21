@@ -43,18 +43,18 @@ ESP32_DEV_NAME='ttyESP32'
 dummy2=0
 
 if [ ! -e /dev/$ODRIVE_DEV_NAME ]; then
-    sudo touch /dev/ttyDUMMY0
-    sudo ln -sf ttyDUMMY0 /dev/$ODRIVE_DEV_NAME
+    touch /dev/ttyDUMMY0
+    ln -sf ttyDUMMY0 /dev/$ODRIVE_DEV_NAME
     dummy0=1
 fi
 if [ ! -e /dev/$ARDUINO_DEV_NAME ]; then
-    sudo touch /dev/ttyDUMMY1
-    sudo ln -sf ttyDUMMY1 /dev/$ARDUINO_DEV_NAME
+    touch /dev/ttyDUMMY1
+    ln -sf ttyDUMMY1 /dev/$ARDUINO_DEV_NAME
     dummy1=1
 fi
 if [ ! -e /dev/$ESP32_DEV_NAME ]; then
-    sudo touch /dev/ttyDUMMY2
-    sudo ln -sf ttyDUMMY2 /dev/$ESP32_DEV_NAME
+    touch /dev/ttyDUMMY2
+    ln -sf ttyDUMMY2 /dev/$ESP32_DEV_NAME
     dummy2=1
 fi
 
@@ -99,15 +99,15 @@ do
 done
 
 if [ $dummy0 -eq 1 ]; then
-    sudo rm /dev/ttyDUMMY0
-    sudo rm /dev/$ODRIVE_DEV_NAME
+    rm /dev/ttyDUMMY0
+    rm /dev/$ODRIVE_DEV_NAME
 fi
 if [ $dummy1 -eq 1 ]; then
-    sudo rm /dev/ttyDUMMY1
-    sudo rm /dev/$ARDUINO_DEV_NAME
+    rm /dev/ttyDUMMY1
+    rm /dev/$ARDUINO_DEV_NAME
 fi
 if [ $dummy2 -eq 1 ]; then
-    sudo rm /dev/ttyDUMMY2
-    sudo rm /dev/$ESP32_DEV_NAME
+    rm /dev/ttyDUMMY2
+    rm /dev/$ESP32_DEV_NAME
 fi
 

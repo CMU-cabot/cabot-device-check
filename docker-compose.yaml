@@ -20,7 +20,7 @@ services:
 # mount script
       - ./:/opt/scripts
 # required for device
-      - /dev:/dev:ro
+      - /dev:/dev
       - /run/udev:/run/udev:ro
       - /run/dbus:/run/dbus:ro
     privileged: true
@@ -32,3 +32,34 @@ services:
       - "/opt/scripts/check_device_status.sh"
       - "-j"
     
+  test:
+    build:
+      context: ./docker/diagnostics
+    environment:
+      - CABOT_REALSENSE_SERIAL_1
+      - CABOT_REALSENSE_SERIAL_2
+      - CABOT_REALSENSE_SERIAL_3
+      - CABOT_CAMERA_NAME_1
+      - CABOT_CAMERA_NAME_2
+      - CABOT_CAMERA_NAME_3
+      - LIDAR_IF
+      - LIDAR_IP
+    command:
+      - "/opt/scripts/check_device_status.sh"
+#      - "-j"
+    volumes:
+# mount script
+      - ./:/opt/scripts
+# required for device
+      - /run/udev:/run/udev:ro
+      - /run/dbus:/run/dbus:ro
+    privileged: true
+    network_mode: host
+    command:
+      - "/opt/scripts/test/test.sh"
+
+  testj:
+    extends: test
+    command:
+      - "/opt/scripts/test/test.sh"
+      - "-j"
