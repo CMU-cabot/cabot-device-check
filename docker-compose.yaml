@@ -11,6 +11,7 @@ services:
       - CABOT_CAMERA_NAME_1
       - CABOT_CAMERA_NAME_2
       - CABOT_CAMERA_NAME_3
+      - CABOT_JETSON_CONFIG
       - LIDAR_IF
       - LIDAR_IP
       - MICRO_CONTROLLER
@@ -40,6 +41,7 @@ services:
       - CABOT_CAMERA_NAME_1
       - CABOT_CAMERA_NAME_2
       - CABOT_CAMERA_NAME_3
+      - CABOT_JETSON_CONFIG
       - LIDAR_IF
       - LIDAR_IP
       - MICRO_CONTROLLER
