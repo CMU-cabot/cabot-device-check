@@ -13,6 +13,7 @@ services:
       - CABOT_CAMERA_NAME_3
       - LIDAR_IF
       - LIDAR_IP
+      - MICRO_CONTROLLER
     command:
       - "/opt/scripts/check_device_status.sh"
     volumes:
@@ -41,6 +42,7 @@ services:
       - CABOT_CAMERA_NAME_3
       - LIDAR_IF
       - LIDAR_IP
+      - MICRO_CONTROLLER
     command:
       - "/opt/scripts/check_device_status.sh"
     volumes:
