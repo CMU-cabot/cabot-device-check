@@ -113,7 +113,8 @@ fi
 
 #### Jetson Mate
 : ${CABOT_JETSON_CONFIG:-''}
-
+: ${CABOT_USER_NAME:-'cabot'}
+: ${CABOT_ID_FILE:-'id_ed25519_cabot'}
 
 #### For Odrive Env
 ODRIVE_DEV_NAME='ttyODRIVE'
@@ -147,7 +148,7 @@ function check_lidar() {
     for lidar_scan_if in ${network_interfaces[@]}
     do
       lidar_scan_ip=''
-      lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $lidar_scan_if | grep "$ARPSCAN_LIDAR" | cut -f1`
+      lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $lidar_scan_if 2> /dev/null | grep "$ARPSCAN_LIDAR" | cut -f1`
       if [ -n "$lidar_scan_ip" ]; then
         num_lidar=$((num_lidar += 1))
         echo "$(eval_gettext "LiDAR:connected:")${lidar_scan_if}:${lidar_scan_ip}"
@@ -167,7 +168,7 @@ function check_lidar() {
 
   else
     lidar_scan_ip=''
-    lidar_scan_ip=`$ARPSCAN_BIN -x -I $LIDAR_IF $LIDAR_IP | grep "$ARPSCAN_LIDAR"`
+    lidar_scan_ip=`$ARPSCAN_BIN -x -I $LIDAR_IF $LIDAR_IP 2> /dev/null | grep "$ARPSCAN_LIDAR"`
     if [ -z "$lidar_scan_ip" ]; then
       echo "$(eval_gettext "LiDAR:not_found::")"
       lidar_device_info["device_status"]=1
@@ -316,14 +317,6 @@ if [[ $output == "json" ]]; then
     redirect="> /dev/null"
 fi
 
-## LIDAR
-declare -A lidar_device_info
-make_json_dict lidar_device_info "LiDAR" $ARPSCAN_LIDAR ""
-jsons+=(lidar_device_info)
-eval "check_lidar $redirect"
-SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
-
-
 ## if there is no jetson mate check realsense on host machine
 if [[ -z $CABOT_JETSON_CONFIG ]]; then
     ## REALSENSE
@@ -344,14 +337,32 @@ if [[ -z $CABOT_JETSON_CONFIG ]]; then
 	    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 	done
     fi
-else
-    ## otherwise check jetson
-    declare -A jetson_info
-    make_json_dict jetson_info "Jetson Mate" "" ""
-    jsons+=(jetson_info)
-    eval "check_jetson_mate jetson_info $redirect"
-    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 fi
+## launch check jetson
+if [[ -n $CABOT_JETSON_CONFIG ]]; then
+    declare -A jetson_map
+    ipaddresses=($(echo $CABOT_JETSON_CONFIG | cut -d':' -f2,4,6 --output-delimiter=' '))
+    fid=3
+    for ipaddress in "${ipaddresses[@]}"; do
+	ping -c 1 -W 0.1 $ipaddress > /dev/null
+	if [ $? -ne 0 ]; then
+	    error=1
+	    jetson_map[$ipaddress]=0
+	else
+	    exec {fid}< <(ssh -l cabot -i /root/.ssh/id_ed25519_cabot $ipaddress lsusb 2> /dev/null)
+	    jetson_map["$ipaddress"]=$fid
+	fi
+	fid=$((fid+1))
+    done
+fi
+
+
+## LIDAR
+declare -A lidar_device_info
+make_json_dict lidar_device_info "LiDAR" $ARPSCAN_LIDAR ""
+jsons+=(lidar_device_info)
+eval "check_lidar $redirect"
+SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 
 ## ODRIVE
 declare -A odrive_device_info
@@ -390,8 +401,39 @@ else
 	    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+1))
 	fi
     fi
-
 fi
+
+## check jetson result later
+for ipaddress in "${!jetson_map[@]}"; do
+    fid=${jetson_map[$ipaddress]}
+    declare -A jetson_${fid}
+    make_json_dict jetson_${fid} "Jetson" "" ""
+    jsons+=(jetson_${fid})
+    declare -n dict=jetson_${fid}
+    dict["device_ip"]="$ipaddress"
+    if [[ $fid -ne 0 ]]; then
+	result=$(cat <&${fid} | grep -E "Bus 00.*Intel Corp.")
+	if [[ -n $result ]]; then
+	    if [[ -n $(echo $result | grep "Bus 002") ]]; then
+		dict["device_message"]="$(eval_gettext "jetson:realsense on USB3 is found")"
+		eval "echo '$(eval_gettext 'jetson:realsense on USB3 is found')' $redirect"
+	    else
+		dict["device_message"]="$(eval_gettext "jetson:realsense on USB2 is found")"
+		eval "echo '$(eval_gettext 'jetson:realsense on USB2 is found')' $redirect"
+	    fi
+	else
+	    dict["device_status"]=1
+	    dict["device_message"]="$(eval_gettext "jetson:realsense is not found")"
+	    eval "echo '$(eval_gettext 'jetson:realsense is not found')' $redirect"
+	    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+1))
+	fi
+    else
+	dict["device_status"]=1
+	dict["device_message"]="$(eval_gettext "jetson:could not connect")"
+	eval "echo 'jetson:could not connect' $redirect"
+	SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+1))
+    fi
+done
 
 ## JSON
 if [[ $output == "json" ]]; then
