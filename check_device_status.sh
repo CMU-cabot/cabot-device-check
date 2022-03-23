@@ -137,9 +137,9 @@ function check_lidar() {
     fi
 
     if [ ${#network_interfaces[*]} -eq 0 ]; then
-      echo "$(eval_gettext "LiDAR:not_found::")"
+      echo "$(eval_gettext "LiDAR:not_found:nmcli")"
       lidar_device_info["device_status"]=1
-      lidar_device_info["device_message"]="$(eval_gettext "LiDAR:not_found::")"
+      lidar_device_info["device_message"]="$(eval_gettext "LiDAR:not_found:nmcli")"
       return 1
     fi
 
@@ -150,7 +150,8 @@ function check_lidar() {
       lidar_scan_ip=`$ARPSCAN_BIN -x -l -I $lidar_scan_if | grep "$ARPSCAN_LIDAR" | cut -f1`
       if [ -n "$lidar_scan_ip" ]; then
         num_lidar=$((num_lidar += 1))
-        echo "$(eval_gettext "LiDAR:connected:")${lidar_scan_if}:${lidar_scan_ip}"
+        echo -n "$(eval_gettext "LiDAR:connected:")"
+        echo "${lidar_scan_if}:${lidar_scan_ip}"
 	lidar_device_info["device_ip"]=${lidar_scan_ip}
 	lidar_device_info["device_if"]=${lidar_scan_if}
         lidar_device_info["device_message"]="$(eval_gettext "LiDAR:connected:")"
@@ -158,10 +159,10 @@ function check_lidar() {
     done
 
     if [ $num_lidar -eq 0 ]; then
-      echo -n "$(eval_gettext "LiDAR:not_found:")"
+      echo -n "$(eval_gettext "LiDAR:not_found:arp-scan:")"
       echo "${lidar_con[@]}:"
       lidar_device_info["device_status"]=1
-      lidar_device_info["device_message"]="$(eval_gettext "LiDAR:not_found:")"
+      lidar_device_info["device_message"]="$(eval_gettext "LiDAR:not_found:arp-scan:")"
       return 1
     fi
 
@@ -169,9 +170,9 @@ function check_lidar() {
     lidar_scan_ip=''
     lidar_scan_ip=`$ARPSCAN_BIN -x -I $LIDAR_IF $LIDAR_IP | grep "$ARPSCAN_LIDAR"`
     if [ -z "$lidar_scan_ip" ]; then
-      echo "$(eval_gettext "LiDAR:not_found::")"
+      echo "$(eval_gettext "LiDAR:not_found:arp-scan:")"
       lidar_device_info["device_status"]=1
-      lidar_device_info["device_message"]="$(eval_gettext "LiDAR:not_found::")"
+      lidar_device_info["device_message"]="$(eval_gettext "LiDAR:not_found:arp-scan:")"
       return 1
     fi
 
@@ -194,22 +195,23 @@ function check_realsense_without_serial() {
 
   if [ ${#realsense_array[*]} -eq 0 ]; then
       realsense_device_info["device_status"]=1
-      realsense_device_info["device_message"]="$(eval_gettext "RealSense:not_found::")"
-      echo "$(eval_gettext "RealSense:not_found")"
+      realsense_device_info["device_message"]="$(eval_gettext "RealSense:not_found:without_serial:rs-enumerate-devices")"
+      echo "$(eval_gettext "RealSense:not_found:without_serial:rs-enumerate-devices")"
       return 1
   elif [ ${#realsense_array[*]} -eq 1 ]; then
       model=$(echo "${realsense_arr[0]}" | cut -f1)
       serial=$(echo "${realsense_arr[0]}" | cut -f2)
       realsense_device_info["device_status"]=0
-      realsense_device_info["device_message"]="$(eval_gettext "RealSense:found::")"
+      realsense_device_info["device_message"]="$(eval_gettext "RealSense:found:without_serial:1:")"
       realsense_device_info["device_model"]=$model
       realsense_device_info["device_serial"]=$serial
-      echo "$(eval_gettext "RealSense:found:$model:$serial")"
+      echo -n "$(eval_gettext "RealSense:found:without_serial:1:")"
+      echo "${model}:${serial}")"
       return 0
   else
       realsense_device_info["device_status"]=1
-      realsense_device_info["device_message"]="$(eval_gettext "RealSense:found_more_than_one::")"
-      echo "$(eval_gettext "RealSense:found_more_than_one")"
+      realsense_device_info["device_message"]="$(eval_gettext "RealSense:found_more_than_one:")"
+      echo "$(eval_gettext "RealSense:found_more_than_one:")"
       return 1
   fi
 }
@@ -226,14 +228,16 @@ function check_realsense_with_serial() {
       if [[ $rserial == $serial ]]; then
 	  realsense_device_info["device_status"]=0
 	  realsense_device_info["device_model"]=$rmodel
-	  realsense_device_info["device_message"]="$(eval_gettext "RealSense:found::")"
-	  echo "$(eval_gettext "RealSense:found:$rmodel:$rserial")"
+	  realsense_device_info["device_message"]="$(eval_gettext "RealSense:found:with_serial:")"
+	  echo -n "$(eval_gettext "RealSense:found:with_serial:")"
+          echo "${rmodel}:${rserial}"
 	  return 0
       fi
   done
   realsense_device_info["device_status"]=1
-  realsense_device_info["device_message"]="$(eval_gettext "RealSense:not_found::")"
-  echo "$(eval_gettext "RealSense:not_found:$serial")"
+  realsense_device_info["device_message"]="$(eval_gettext "RealSense:not_found:with_serial:rs-enumerate-devices")"
+  echo -n "$(eval_gettext "RealSense:not_found:with_serial:rs-enumerate-devices")"
+  echo "$serial"
   return 1
 }
 
@@ -246,16 +250,16 @@ function check_tty() {
   tty_name=$3
 
   if [ ! -L /dev/$tty_name ]; then
-    echo "$(eval_gettext "$name:dev_link_not_found_err::")"
+    echo "${name}$(eval_gettext ":dev_link_not_found_err:")"
     dict_name["device_status"]=1
-    dict_name["device_message"]="$(eval_gettext "$name:dev_link_not_found_err::")"
+    dict_name["device_message"]="${name}$(eval_gettext ":dev_link_not_found_err:")"
     return 1
   fi
   dev_name_linked=`readlink /dev/$tty_name`
   if [[ -z $dev_name_linked ]] || [ ! -e /dev/${dev_name_linked} ]; then
-    echo "$(eval_gettext "$name:dev_file_not_found_err::")"
+    echo "${name}$(eval_gettext ":dev_file_not_found_err:")"
     dict_name["device_status"]=1
-    dict_name["device_message"]="$(eval_gettext "$name:dev_file_not_found_err::")"
+    dict_name["device_message"]="${name}$(eval_gettext ":dev_file_not_found_err:")"
     return 1
   fi
 
@@ -263,10 +267,10 @@ function check_tty() {
   readarray -t usb_name< <(echo "$udev_output" | sed -n -E "s/(E: ID_VENDOR_FROM_DATABASE=|E: ID_MODEL_FROM_DATABASE=)//p")
   serial=$(echo "$udev_output" | sed -n -E "s/(E: ID_SERIAL_SHORT=)//p" | tr -d '\n')
 
-  dict_name["device_message"]="$(eval_gettext "$name:usb_connected::")"
+  dict_name["device_message"]="${name}$(eval_gettext ":usb_connected:")"
   dict_name["device_model"]=${usb_name[@]}
   dict_name["device_serial"]=${serial}
-  echo -n "$(eval_gettext "$name:usb_connected:")"
+  echo -n "${name}$(eval_gettext ":usb_connected:")"
   echo "${usb_name[*]}"
 
   return 0
