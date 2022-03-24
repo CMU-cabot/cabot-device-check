@@ -50,5 +50,4 @@ RUN apt update && \
 
 COPY check_device_status.sh /opt/scripts/
 COPY locale/ /opt/scripts/locale/
-COPY .env /opt/scripts/
 COPY test /opt/scripts/test
