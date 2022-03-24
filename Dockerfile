@@ -29,7 +29,7 @@ RUN apt update && \
 	apt clean && \
 	rm -rf /var/lib/apt/lists/*
 RUN pip3 install --no-cache-dir \
-	odrive==0.6.2.dev67
+	odrive==0.6.0.dev67
 
 RUN apt update && \
 	apt install -y --no-install-recommends \
