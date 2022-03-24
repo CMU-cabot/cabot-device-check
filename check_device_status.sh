@@ -277,43 +277,6 @@ function check_tty() {
   return 0
 }
 
-function join_by {
-  local d=${1-} f=${2-}
-  if shift 2; then
-    printf %s "$f" "${@/#/$d}"
-  fi
-}
-function check_jetson_mate() {
-    local -n dict=$1
-    tempifs=$IFS
-    IFS=' '
-    error=0
-    found_ips=()
-    for conf in $CABOT_JETSON_CONFIG; do
-        IFS=':'
-        items=($conf)
-        ipaddress=${items[1]}
-	ping -c 1 -W 0.1 $ipaddress > /dev/null
-	if [ $? -ne 0 ]; then
-	    found_ips+=(${ipaddress}-"X")
-	    error=1
-	else
-	    found_ips+=(${ipaddress}-"O")
-	fi
-    done
-    dict["device_status"]=$error
-    dict["device_ip"]=$(join_by '\n' ${found_ips[@]})
-    if [ $error -eq 0 ]; then
-	dict["device_message"]="$(eval_gettext "jetson_found")"
-	echo "$(eval_gettext "jetson_found")"
-    else
-	dict["device_message"]="$(eval_gettext "jetson_not_found")"
-	echo "$(eval_gettext "jetson_not_found")"
-    fi
-    IFS=$tempifs
-    return $error
-}
-
 
 ## redirect output to /dev/null if $output is json
 redirect=
@@ -353,7 +316,7 @@ if [[ -n $CABOT_JETSON_CONFIG ]]; then
 	    error=1
 	    jetson_map[$ipaddress]=0
 	else
-	    exec {fid}< <(ssh -l cabot -i /root/.ssh/id_ed25519_cabot $ipaddress lsusb 2> /dev/null)
+	    exec {fid}< <(ssh -l $CABOT_USER_NAME -i /root/.ssh/$CABOT_ID_FILE $ipaddress lsusb 2> /dev/null)
 	    jetson_map["$ipaddress"]=$fid
 	fi
 	fid=$((fid+1))
@@ -434,7 +397,7 @@ for ipaddress in "${!jetson_map[@]}"; do
     else
 	dict["device_status"]=1
 	dict["device_message"]="$(eval_gettext "jetson:could not connect")"
-	eval "echo 'jetson:could not connect' $redirect"
+	eval "echo '$(eval_gettext 'jetson:could not connect')' $redirect"
 	SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+1))
     fi
 done
