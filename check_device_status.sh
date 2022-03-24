@@ -207,7 +207,7 @@ function check_realsense_without_serial() {
       realsense_device_info["device_model"]=$model
       realsense_device_info["device_serial"]=$serial
       echo -n "$(eval_gettext "RealSense:found:without_serial:1:")"
-      echo "${model}:${serial}")"
+      echo "${model}:${serial}"
       return 0
   else
       realsense_device_info["device_status"]=1

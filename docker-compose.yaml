@@ -17,6 +17,7 @@ services:
       - MICRO_CONTROLLER
       - CABOT_USER_NAME
       - CABOT_ID_FILE
+      - LANG
     command:
       - "/opt/scripts/check_device_status.sh"
     volumes:
@@ -48,6 +49,7 @@ services:
       - LIDAR_IF
       - LIDAR_IP
       - MICRO_CONTROLLER
+      - LANG
     command:
       - "/opt/scripts/check_device_status.sh"
     volumes:
