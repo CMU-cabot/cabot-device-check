@@ -49,5 +49,6 @@ RUN apt update && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY check_device_status.sh /opt/scripts/
+COPY locale/ /opt/scripts/locale/
 COPY .env /opt/scripts/
 COPY test /opt/scripts/test
