@@ -57,9 +57,7 @@ msgstr "RealSenseカメラはUSBで接続されています。"
 #: check_device_status.sh:239 check_device_status.sh:240
 #, sh-format
 msgid "RealSense:not_found:with_serial:rs-enumerate-devices"
-msgstr ""
-"指定したシリアルのRealSenseカメラがrs-enumerate-devices -s コマンドで見つかり"
-"ません。"
+msgstr "指定したシリアルのRealSenseカメラがrs-enumerate-devices -s コマンドで見つかりません。"
 
 #: check_device_status.sh:254 check_device_status.sh:256
 #, sh-format
