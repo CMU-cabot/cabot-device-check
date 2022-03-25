@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cabot-test 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-23 16:45+0900\n"
+"POT-Creation-Date: 2022-03-24 02:07-0400\n"
 "PO-Revision-Date: 2022-03-23 16:45+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,74 +17,94 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: check_device_status.sh:140 check_device_status.sh:142
+#: check_device_status.sh:141 check_device_status.sh:143
 #, sh-format
 msgid "LiDAR:not_found:nmcli"
 msgstr "LiDARがnmcli -t d コマンドで見つかりません。"
 
-#: check_device_status.sh:153 check_device_status.sh:157
-#: check_device_status.sh:179 check_device_status.sh:184
+#: check_device_status.sh:154 check_device_status.sh:158
+#: check_device_status.sh:180 check_device_status.sh:185
 #, sh-format
 msgid "LiDAR:connected:"
 msgstr "LiDARはethernetで接続されています。"
 
-#: check_device_status.sh:162 check_device_status.sh:165
-#: check_device_status.sh:173 check_device_status.sh:175
+#: check_device_status.sh:163 check_device_status.sh:166
+#: check_device_status.sh:174 check_device_status.sh:176
 #, sh-format
 msgid "LiDAR:not_found:arp-scan:"
 msgstr "LiDARがarp-scanコマンドで見つかりません。"
 
-#: check_device_status.sh:198 check_device_status.sh:199
+#: check_device_status.sh:199 check_device_status.sh:200
 #, sh-format
 msgid "RealSense:not_found:without_serial:rs-enumerate-devices"
 msgstr "RealSenseカメラがrs-enumerate-devices -s コマンドで見つかりません。"
 
-#: check_device_status.sh:205 check_device_status.sh:208
+#: check_device_status.sh:206 check_device_status.sh:209
 #, sh-format
 msgid "RealSense:found:without_serial:1:"
 msgstr "RealSenseカメラはUSBで接続されています。"
 
-#: check_device_status.sh:213 check_device_status.sh:214
+#: check_device_status.sh:214 check_device_status.sh:215
 #, sh-format
 msgid "RealSense:found_more_than_one:"
 msgstr "RealSenseカメラはUSBで全て接続されています。"
 
-#: check_device_status.sh:231 check_device_status.sh:232
+#: check_device_status.sh:232 check_device_status.sh:233
 #, sh-format
 msgid "RealSense:found:with_serial:"
 msgstr "RealSenseカメラはUSBで接続されています。"
 
-#: check_device_status.sh:238 check_device_status.sh:239
+#: check_device_status.sh:239 check_device_status.sh:240
 #, sh-format
 msgid "RealSense:not_found:with_serial:rs-enumerate-devices"
 msgstr "指定したシリアルのRealSenseカメラがrs-enumerate-devices -s コマンドで見つかりません。"
 
-#: check_device_status.sh:253 check_device_status.sh:255
+#: check_device_status.sh:254 check_device_status.sh:256
 #, sh-format
 msgid ":dev_link_not_found_err:"
 msgstr "のデバイスファイルのリンクが見つかりません。"
 
-#: check_device_status.sh:260 check_device_status.sh:262
+#: check_device_status.sh:261 check_device_status.sh:263
 #, sh-format
 msgid ":dev_file_not_found_err:"
 msgstr "のデバイスファイルが見つかりません。"
 
-#: check_device_status.sh:270 check_device_status.sh:273
+#: check_device_status.sh:271 check_device_status.sh:274
 #, sh-format
 msgid ":usb_connected:"
 msgstr "はUSBで接続されています。"
 
-#: check_device_status.sh:306 check_device_status.sh:307
+#: check_device_status.sh:307 check_device_status.sh:308
 #, sh-format
 msgid "jetson_found"
 msgstr "Jetsonは接続されています。"
 
-#: check_device_status.sh:309 check_device_status.sh:310
+#: check_device_status.sh:310 check_device_status.sh:311
 #, sh-format
 msgid "jetson_not_found"
 msgstr "Jetsonが見つかりません。"
 
-#: check_device_status.sh:391 check_device_status.sh:393
+#: check_device_status.sh:402 check_device_status.sh:404
 #, sh-format
 msgid "no_micro_controller_found"
 msgstr "Micro controllerが見つかりません。"
+
+#: check_device_status.sh:422 check_device_status.sh:423
+#, sh-format
+msgid "jetson:realsense on USB3 is found"
+msgstr "Jetson - RealsenseがUSB3として認識されました。"
+
+#: check_device_status.sh:425 check_device_status.sh:426
+#, sh-format
+msgid "jetson:realsense on USB2 is found"
+msgstr "Jetson - RealsenseがUSB2として認識されました。"
+
+#: check_device_status.sh:430 check_device_status.sh:431
+#, sh-format
+msgid "jetson:realsense is not found"
+msgstr "Jetson - Realsenseが見つかりません。"
+
+#: check_device_status.sh:436 check_device_status.sh:437
+#, sh-format
+msgid "jetson:could not connect"
+msgstr "Jetsonに接続できません。"

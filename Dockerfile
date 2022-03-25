@@ -44,6 +44,7 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 RUN apt update && \
 	apt install -y --no-install-recommends \
 	iputils-ping \
+	ssh \
 	&& \
 	apt clean && \
 	rm -rf /var/lib/apt/lists/*
