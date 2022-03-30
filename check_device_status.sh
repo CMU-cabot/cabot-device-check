@@ -52,10 +52,11 @@ function help() {
     echo ""
     echo "-h         show this help "
     echo "-j         output in json format"
+    echo "-s         skip check ODrive connection"
     echo "-t         test"
 }
 
-while getopts "hjt" opt; do
+while getopts "hjst" opt; do
     case $opt in
 	h)
 	    help
@@ -63,6 +64,9 @@ while getopts "hjt" opt; do
 	    ;;
 	j)
 	    output=json
+	    ;;
+	s)
+	    skipOdrive=1
 	    ;;
 	t)
 	    test=1
@@ -332,11 +336,13 @@ eval "check_lidar $redirect"
 SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 
 ## ODRIVE
-declare -A odrive_device_info
-make_json_dict odrive_device_info "Motor Controller" "" ""
-jsons+=(odrive_device_info)
-eval "check_tty odrive_device_info ODrive $ODRIVE_DEV_NAME $redirect"
-SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+if [[ $skipOdrive -eq 0 ]]; then
+    declare -A odrive_device_info
+    make_json_dict odrive_device_info "Motor Controller" "" ""
+    jsons+=(odrive_device_info)
+    eval "check_tty odrive_device_info ODrive $ODRIVE_DEV_NAME $redirect"
+    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+fi
 
 ## ARDUINO or ESP32
 declare -A mc_info
