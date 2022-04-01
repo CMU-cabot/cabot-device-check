@@ -84,8 +84,8 @@ export TEXTDOMAINDIR=${scriptdir}/locale
 
 
 #### For Velodyne LiDAR Env
-: ${LIDAR_IF:-''}
-: ${LIDAR_IP:-''}
+: ${LIDAR_IF:=''}
+: ${LIDAR_IP:=''}
 ARPSCAN_LIDAR='Velodyne'
 ARPSCAN_BIN=`which arp-scan`
 NMCLI_BIN=`which nmcli`
@@ -93,12 +93,12 @@ NMCLI_BIN=`which nmcli`
 #### For RealSense Env
 RS_ENUMERATE_DEVICES_BIN=`which rs-enumerate-devices`
 
-: ${CABOT_REALSENSE_SERIAL_1:-''}
-: ${CABOT_REALSENSE_SERIAL_2:-''}
-: ${CABOT_REALSENSE_SERIAL_3:-''}
-: ${CABOT_CAMERA_NAME_1:-''}
-: ${CABOT_CAMERA_NAME_2:-''}
-: ${CABOT_CAMERA_NAME_3:-''}
+: ${CABOT_REALSENSE_SERIAL_1:=''}
+: ${CABOT_REALSENSE_SERIAL_2:=''}
+: ${CABOT_REALSENSE_SERIAL_3:=''}
+: ${CABOT_CAMERA_NAME_1:=''}
+: ${CABOT_CAMERA_NAME_2:=''}
+: ${CABOT_CAMERA_NAME_3:=''}
 
 declare -A cabot_realsense_serial_map=()
 if [[ -n $CABOT_REALSENSE_SERIAL_1 ]]; then
@@ -112,9 +112,10 @@ if [[ -n $CABOT_REALSENSE_SERIAL_3 ]]; then
 fi
 
 #### Jetson Mate
-: ${CABOT_JETSON_CONFIG:-''}
-: ${CABOT_USER_NAME:-'cabot'}
-: ${CABOT_ID_FILE:-'id_ed25519_cabot'}
+: ${CABOT_JETSON_CONFIG:=''}
+: ${CABOT_USER_NAME:='cabot'}
+: ${CABOT_ID_FILE:='id_ed25519_cabot'}
+: ${CABOT_ID_DIR:='/root/.ssh'}
 
 #### For Odrive Env
 ODRIVE_DEV_NAME='ttyODRIVE'
@@ -316,7 +317,7 @@ if [[ -n $CABOT_JETSON_CONFIG ]]; then
 	    error=1
 	    jetson_map[$ipaddress]=0
 	else
-	    exec {fid}< <(ssh -l $CABOT_USER_NAME -i /root/.ssh/$CABOT_ID_FILE $ipaddress lsusb 2> /dev/null)
+	    exec {fid}< <(ssh -l $CABOT_USER_NAME -i $CABOT_ID_DIR/$CABOT_ID_FILE -o "StrictHostKeyChecking=no" $ipaddress lsusb 2> /dev/null)
 	    jetson_map["$ipaddress"]=$fid
 	fi
 	fid=$((fid+1))
