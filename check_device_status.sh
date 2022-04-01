@@ -362,7 +362,7 @@ else
 	if [ $? -eq 0 ]; then
 	    eval "check_tty mc_info $name $tty_name $redirect"
 	else
-	    echo "$(eval_gettext "no_micro_controller_found")"
+	    eval "echo '$(eval_gettext 'no_micro_controller_found')' $redirect"
 	    mc_info["device_status"]=1
 	    mc_info["device_message"]="$(eval_gettext "no_micro_controller_found")"
 	    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+1))
