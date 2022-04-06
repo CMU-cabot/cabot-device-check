@@ -1,0 +1,37 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-04-05 19:36+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: CaBot-odrive-diag.py:80 CaBot-odrive-diag.py:81
+msgid "ODrivetool:not_found_find_any:"
+msgstr ""
+
+#: CaBot-odrive-diag.py:85 CaBot-odrive-diag.py:87
+msgid "ODrivetool:found_find_any:serial_no:"
+msgstr ""
+
+#: CaBot-odrive-diag.py:89 CaBot-odrive-diag.py:91
+msgid "ODrivetool:have_err:NumOfErr:"
+msgstr ""
+
+#: CaBot-odrive-diag.py:96 CaBot-odrive-diag.py:98
+msgid "ODrivetool:TimeoutError:"
+msgstr ""
+
+#: CaBot-odrive-diag.py:102 CaBot-odrive-diag.py:104
+msgid "ODrivetool:Exception:"
+msgstr ""
+

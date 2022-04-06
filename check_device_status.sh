@@ -52,10 +52,11 @@ function help() {
     echo ""
     echo "-h         show this help "
     echo "-j         output in json format"
+    echo "-s         skip check ODrive USB connection"
     echo "-t         test"
 }
 
-while getopts "hjt" opt; do
+while getopts "hjst" opt; do
     case $opt in
 	h)
 	    help
@@ -63,6 +64,9 @@ while getopts "hjt" opt; do
 	    ;;
 	j)
 	    output=json
+	    ;;
+	s)
+	    skipOdriveUsb=1
 	    ;;
 	t)
 	    test=1
@@ -81,7 +85,6 @@ fi
 source gettext.sh
 export TEXTDOMAIN=check_device_status
 export TEXTDOMAINDIR=${scriptdir}/locale
-
 
 #### For Velodyne LiDAR Env
 : ${LIDAR_IF:=''}
@@ -335,8 +338,18 @@ SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 ## ODRIVE
 declare -A odrive_device_info
 make_json_dict odrive_device_info "Motor Controller" "" ""
+if [[ $skipOdriveUsb -eq 0 ]]; then
+    eval "check_tty odrive_device_info ODrive $ODRIVE_DEV_NAME $redirect"
+fi
+if [[ $skipOdriveUsb -eq 0 ]] && [[ $? -eq 0 ]]; then
+    odtoolres=`${scriptdir}/CaBot-odrive-diag.py`
+    odrive_device_info["device_status"]=$?
+    odrive_device_info["device_serial"]=`echo $odtoolres | cut -f1 -d ':'`
+    odrive_device_info["device_message"]=`echo $odtoolres | cut -f2- -d ':'`
+    echo -n "${odrive_device_info["device_message"]}"
+    echo "${odrive_device_info["device_serial"]}"
+fi
 jsons+=(odrive_device_info)
-eval "check_tty odrive_device_info ODrive $ODRIVE_DEV_NAME $redirect"
 SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 
 ## ARDUINO or ESP32

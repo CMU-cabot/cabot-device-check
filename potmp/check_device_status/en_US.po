@@ -1,0 +1,100 @@
+# English translations for Cabot-test package.
+# Copyright (C) 2022 THE Cabot-test'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Cabot-test package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Cabot-test 5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-06 16:51+0900\n"
+"PO-Revision-Date: 2022-03-23 16:45+0900\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: check_device_status.sh:144 check_device_status.sh:146
+#, sh-format
+msgid "LiDAR:not_found:nmcli"
+msgstr "LiDAR is not found by nmcli -t d command."
+
+#: check_device_status.sh:157 check_device_status.sh:161
+#: check_device_status.sh:183 check_device_status.sh:188
+#, sh-format
+msgid "LiDAR:connected:"
+msgstr "LiDAR is connected via ethernet."
+
+#: check_device_status.sh:166 check_device_status.sh:169
+#: check_device_status.sh:177 check_device_status.sh:179
+#, sh-format
+msgid "LiDAR:not_found:arp-scan:"
+msgstr "LiDAR is not found by arp-scan command."
+
+#: check_device_status.sh:202 check_device_status.sh:203
+#, sh-format
+msgid "RealSense:not_found:without_serial:rs-enumerate-devices"
+msgstr "RealSense camera is not found by rs-enumerate-devices -s command."
+
+#: check_device_status.sh:209 check_device_status.sh:212
+#, sh-format
+msgid "RealSense:found:without_serial:1:"
+msgstr "RealSense camera is connected via USB."
+
+#: check_device_status.sh:217 check_device_status.sh:218
+#, sh-format
+msgid "RealSense:found_more_than_one:"
+msgstr "All RealSense cameras are connected via USB."
+
+#: check_device_status.sh:235 check_device_status.sh:236
+#, sh-format
+msgid "RealSense:found:with_serial:"
+msgstr "RealSense camera is connected via USB."
+
+#: check_device_status.sh:242 check_device_status.sh:243
+#, sh-format
+msgid "RealSense:not_found:with_serial:rs-enumerate-devices"
+msgstr "RealSense camera with the specified serial number is not found by rs-enumerate-devices -s command."
+
+#: check_device_status.sh:257 check_device_status.sh:259
+#, sh-format
+msgid ":dev_link_not_found_err:"
+msgstr "s link of device file is not found."
+
+#: check_device_status.sh:264 check_device_status.sh:266
+#, sh-format
+msgid ":dev_file_not_found_err:"
+msgstr "s device file is not found."
+
+#: check_device_status.sh:274 check_device_status.sh:277
+#, sh-format
+msgid ":usb_connected:"
+msgstr " is connected via USB."
+
+#: check_device_status.sh:378 check_device_status.sh:380
+#, sh-format
+msgid "no_micro_controller_found"
+msgstr "Micro controller is not found."
+
+#: check_device_status.sh:398 check_device_status.sh:399
+#, sh-format
+msgid "jetson:realsense on USB3 is found"
+msgstr "Jetson - Realsense on USB3 is found"
+
+#: check_device_status.sh:401 check_device_status.sh:402
+#, sh-format
+msgid "jetson:realsense on USB2 is found"
+msgstr "Jetson - Realsense on USB2 is found"
+
+#: check_device_status.sh:406 check_device_status.sh:407
+#, sh-format
+msgid "jetson:realsense is not found"
+msgstr "Jetson - Realsense is not found."
+
+#: check_device_status.sh:412 check_device_status.sh:413
+#, sh-format
+msgid "jetson:could not connect"
+msgstr "Jetson could not be connected"

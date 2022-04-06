@@ -50,5 +50,6 @@ RUN apt update && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY check_device_status.sh /opt/scripts/
+COPY CaBot-odrive-diag.py /opt/scripts/
 COPY locale/ /opt/scripts/locale/
 COPY test /opt/scripts/test
