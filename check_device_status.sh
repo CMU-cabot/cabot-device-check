@@ -338,16 +338,13 @@ SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 ## ODRIVE
 declare -A odrive_device_info
 make_json_dict odrive_device_info "Motor Controller" "" ""
-if [[ $skipOdriveUsb -eq 0 ]]; then
-    eval "check_tty odrive_device_info ODrive $ODRIVE_DEV_NAME $redirect"
-fi
-if [[ $skipOdriveUsb -eq 0 ]] && [[ $? -eq 0 ]]; then
+eval "check_tty odrive_device_info ODrive $ODRIVE_DEV_NAME $redirect"
+if [[ $? -eq 0 ]] && [[ $skipOdriveUsb -eq 0 ]]; then
     odtoolres=`${scriptdir}/CaBot-odrive-diag.py`
     odrive_device_info["device_status"]=$?
     odrive_device_info["device_serial"]=`echo $odtoolres | cut -f1 -d ':'`
     odrive_device_info["device_message"]=`echo $odtoolres | cut -f2- -d ':'`
-    echo -n "${odrive_device_info["device_message"]}"
-    echo "${odrive_device_info["device_serial"]}"
+    eval "echo $odtoolres $redirect"
 fi
 jsons+=(odrive_device_info)
 SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))

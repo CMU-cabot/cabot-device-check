@@ -34,7 +34,14 @@ services:
     command:
       - "/opt/scripts/check_device_status.sh"
       - "-j"
-    
+
+  checkjs:
+    extends: check
+    command:
+      - "/opt/scripts/check_device_status.sh"
+      - "-j"
+      - "-s"
+
   test:
     build:
       context: .

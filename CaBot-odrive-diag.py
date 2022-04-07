@@ -74,7 +74,7 @@ if verbose == 1 :
 token=Event()
 
 try:
-    odrv0 = odrive.find_any(timeout=3, channel_termination_token=token)
+    odrv0 = odrive.find_any(timeout=1, channel_termination_token=token)
     if str(odrv0) == "None":
         if verbose == 1:
             print(_("ODrivetool:not_found_find_any:"))
