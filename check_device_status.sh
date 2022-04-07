@@ -320,7 +320,7 @@ if [[ -n $CABOT_JETSON_CONFIG ]]; then
 	    error=1
 	    jetson_map[$ipaddress]=0
 	else
-	    exec {fid}< <(ssh -l $CABOT_USER_NAME -i $CABOT_ID_DIR/$CABOT_ID_FILE -o "StrictHostKeyChecking=no" $ipaddress lsusb 2> /dev/null)
+	    exec {fid}< <(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=$CABOT_ID_DIR/known_hosts -l $CABOT_USER_NAME -i $CABOT_ID_DIR/$CABOT_ID_FILE $ipaddress lsusb 2> /dev/null)
 	    jetson_map["$ipaddress"]=$fid
 	fi
 	fid=$((fid+1))
