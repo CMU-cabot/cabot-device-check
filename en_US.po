@@ -47,7 +47,7 @@ msgstr "RealSense camera is connected via USB."
 #: check_device_status.sh:214 check_device_status.sh:215
 #, sh-format
 msgid "RealSense:found_more_than_one:"
-msgstr "All RealSense cameras are connected via USB."
+msgstr "RealSense cameras are found more than one."
 
 #: check_device_status.sh:232 check_device_status.sh:233
 #, sh-format
