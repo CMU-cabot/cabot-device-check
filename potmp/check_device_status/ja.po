@@ -20,7 +20,7 @@ msgstr ""
 #: check_device_status.sh:144 check_device_status.sh:146
 #, sh-format
 msgid "LiDAR:not_found:nmcli"
-msgstr "LiDARがnmcli -t d コマンドで見つかりません。"
+msgstr "LiDAR: nmcli -t d コマンドでネットワークインタフェースが見つかりません。ネットワークケーブルもしくはネットワーク設定を確認してください。"
 
 #: check_device_status.sh:157 check_device_status.sh:161
 #: check_device_status.sh:183 check_device_status.sh:188
@@ -32,12 +32,12 @@ msgstr "LiDARはethernetで接続されています。"
 #: check_device_status.sh:177 check_device_status.sh:179
 #, sh-format
 msgid "LiDAR:not_found:arp-scan:"
-msgstr "LiDARがarp-scanコマンドで見つかりません。"
+msgstr "LiDARがarp-scanコマンドで見つかりません。LiDARのIPアドレスの設定を確認してください。"
 
 #: check_device_status.sh:202 check_device_status.sh:203
 #, sh-format
 msgid "RealSense:not_found:without_serial:rs-enumerate-devices"
-msgstr "RealSenseカメラがrs-enumerate-devices -s コマンドで見つかりません。"
+msgstr "RealSenseカメラがrs-enumerate-devices -s コマンドで見つかりません。USB接続を確認してください。"
 
 #: check_device_status.sh:209 check_device_status.sh:212
 #, sh-format
@@ -47,7 +47,7 @@ msgstr "RealSenseカメラはUSBで接続されています。"
 #: check_device_status.sh:217 check_device_status.sh:218
 #, sh-format
 msgid "RealSense:found_more_than_one:"
-msgstr "RealSenseカメラはUSBで全て接続されています。"
+msgstr "RealSenseカメラは1台より多く接続されています。"
 
 #: check_device_status.sh:235 check_device_status.sh:236
 #, sh-format
@@ -57,12 +57,12 @@ msgstr "RealSenseカメラはUSBで接続されています。"
 #: check_device_status.sh:242 check_device_status.sh:243
 #, sh-format
 msgid "RealSense:not_found:with_serial:rs-enumerate-devices"
-msgstr "指定したシリアルのRealSenseカメラがrs-enumerate-devices -s コマンドで見つかりません。"
+msgstr "指定したシリアルのRealSenseカメラがrs-enumerate-devices -s コマンドで見つかりません。USB接続を確認してください。"
 
 #: check_device_status.sh:257 check_device_status.sh:259
 #, sh-format
 msgid ":dev_link_not_found_err:"
-msgstr "のデバイスファイルのリンクが見つかりません。"
+msgstr "のデバイスファイルのリンクが見つかりません。機器のUSB接続を確認してください。"
 
 #: check_device_status.sh:264 check_device_status.sh:266
 #, sh-format
@@ -77,7 +77,7 @@ msgstr "はUSBで接続されています。"
 #: check_device_status.sh:378 check_device_status.sh:380
 #, sh-format
 msgid "no_micro_controller_found"
-msgstr "Micro controllerが見つかりません。"
+msgstr "Arduino MegaもしくはESP32が見つかりません。USB接続を確認してください。"
 
 #: check_device_status.sh:398 check_device_status.sh:399
 #, sh-format
@@ -92,9 +92,9 @@ msgstr "Jetson - RealsenseがUSB2として認識されました。"
 #: check_device_status.sh:406 check_device_status.sh:407
 #, sh-format
 msgid "jetson:realsense is not found"
-msgstr "Jetson - Realsenseが見つかりません。"
+msgstr "Jetson - Realsenseが見つかりません。USBを挿し直してください。"
 
 #: check_device_status.sh:412 check_device_status.sh:413
 #, sh-format
 msgid "jetson:could not connect"
-msgstr "Jetsonに接続できません。"
+msgstr "Jetsonに接続できません。Jetsonの電源、ネットワーク接続を確認してください。"
