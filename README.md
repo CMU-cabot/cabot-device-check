@@ -30,16 +30,16 @@ $ pygettext3 -o potmp/CaBot-odrive-diag/CaBot-odrive-diag.pot CaBot-odrive-diag.
 - Please update *.po files and make new *.mo files for each scripts and languages.
 ```
 $ cd potmp/check_device_status
-$ msgmerge -U ja.po check_device_status.pot
-$ msgmerge -U en_US.po check_device_status.pot
+$ msgmerge -U ja.po check_device_status.pot --no-wrap
+$ msgmerge -U en_US.po check_device_status.pot --no-wrap
 $ vi ja.po        # Please edit msgstr lines in the file.
 $ vi en_US.po     # Please edit msgstr lines in the file.
 $ msgfmt -o ../../locale/ja/LC_MESSAGES/check_device_status.mo ja.po
 $ msgfmt -o ../../locale/en_US/LC_MESSAGES/check_device_status.mo en_US.po
 
 $ cd potmp/CaBot-odrive-diag
-$ msgmerge -U ja.po CaBot-odrive-diag.pot
-$ msgmerge -U en_US.po CaBot-odrive-diag.pot
+$ msgmerge -U ja.po CaBot-odrive-diag.pot --no-wrap
+$ msgmerge -U en_US.po CaBot-odrive-diag.pot --no-wrap
 $ vi ja.po        # Please edit msgstr lines in the file.
 $ vi en_US.po     # Please edit msgstr lines in the file.
 $ msgfmt -o ../../locale/ja/LC_MESSAGES/CaBot-odrive-diag.mo ja.po
