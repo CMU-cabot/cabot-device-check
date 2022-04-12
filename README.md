@@ -21,13 +21,13 @@ Host *
 
 ## If check_device_status.sh and/or CaBot-odrive-diag.py were modified, please update *.pot, *.po and *.mo files for i18n (internationalization).
 
-### Please make new *.pot file for each scripts.
+- Please make new *.pot file for each scripts.
 ```
 $ xgettext -o potmp/check_device_status/check_device_status.pot check_device_status.sh
 $ pygettext3 -o potmp/CaBot-odrive-diag/CaBot-odrive-diag.pot CaBot-odrive-diag.py
 ```
 
-### Please update *.po files and make new *.mo files for each scripts and languages.
+- Please update *.po files and make new *.mo files for each scripts and languages.
 ```
 $ cd potmp/check_device_status
 $ msgmerge -U ja.po check_device_status.pot
