@@ -138,7 +138,7 @@ function check_lidar() {
   if [[ -z $LIDAR_IF ]] || [[ -z $LIDAR_IP ]]; then
     network_interfaces=($LIDAR_IF)
     if [[ -z $LIDAR_IF ]]; then
-        network_interfaces=$($NMCLI_BIN -t d | grep ':ethernet:connected:' | cut -f 1 -d ':')
+        readarray -t network_interfaces< <($NMCLI_BIN -t d | grep ':ethernet:connected:' | cut -f 1 -d ':')
     fi
 
     if [ ${#network_interfaces[*]} -eq 0 ]; then
@@ -172,6 +172,15 @@ function check_lidar() {
     fi
 
   else
+    readarray -t network_interfaces< <($NMCLI_BIN -t d | grep $LIDAR_IF | grep ':ethernet:connected:' | cut -f 1 -d ':')
+
+    if [ ${#network_interfaces[*]} -eq 0 ]; then
+      echo "$(eval_gettext "LiDAR:not_found:nmcli")"
+      lidar_device_info["device_status"]=1
+      lidar_device_info["device_message"]="$(eval_gettext "LiDAR:not_found:nmcli")"
+      return 1
+    fi
+
     lidar_scan_ip=''
     lidar_scan_ip=`$ARPSCAN_BIN -x -I $LIDAR_IF $LIDAR_IP 2> /dev/null | grep "$ARPSCAN_LIDAR"`
     if [ -z "$lidar_scan_ip" ]; then
