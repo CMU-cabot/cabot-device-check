@@ -422,6 +422,14 @@ for ipaddress in "${!jetson_map[@]}"; do
     fi
 done
 
+## check hci0
+hci0_status=$(hciconfig hci0 | grep 'UP')
+if [[ -z $hci0_status ]]; then
+    sudo rmmod btusb
+    sudo modprobe btusb
+    eval "echo '$(eval_gettext 'trying to recover from hci0 down')' $redirect"
+fi
+
 ## JSON
 if [[ $output == "json" ]]; then
     # build devices array
