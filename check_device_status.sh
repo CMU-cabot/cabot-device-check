@@ -89,7 +89,7 @@ export TEXTDOMAINDIR=${scriptdir}/locale
 #### For Velodyne LiDAR Env
 : ${LIDAR_IF:=''}
 : ${LIDAR_IP:=''}
-ARPSCAN_LIDAR='Velodyne'
+: ${ARPSCAN_LIDAR:='Velodyne'}
 ARPSCAN_BIN=`which arp-scan`
 NMCLI_BIN=`which nmcli`
 
