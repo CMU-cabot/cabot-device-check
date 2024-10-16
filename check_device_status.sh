@@ -348,15 +348,17 @@ SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 declare -A odrive_device_info
 make_json_dict odrive_device_info "Motor Controller" "" ""
 eval "check_tty odrive_device_info ODrive $ODRIVE_DEV_NAME $redirect"
-if [[ $? -eq 0 ]] && [[ $skipOdriveUsb -eq 0 ]]; then
+temp=$?
+if [[ $temp -eq 0 ]] && [[ $skipOdriveUsb -eq 0 ]]; then
     odtoolres=`${scriptdir}/CaBot-odrive-diag.py`
     odrive_device_info["device_status"]=$?
     odrive_device_info["device_serial"]=`echo $odtoolres | cut -f1 -d ':'`
     odrive_device_info["device_message"]=`echo $odtoolres | cut -f2- -d ':'`
     eval "echo $odtoolres $redirect"
+    temp=$?
 fi
 jsons+=(odrive_device_info)
-SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
+SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$temp))
 
 ## ARDUINO or ESP32
 declare -A mc_info
@@ -367,6 +369,7 @@ if [[ -n $MICRO_CONTROLLER ]]; then
     name=$MICRO_CONTROLLER
     tty_name=${MICRO_CONTROLLER_DEV_NAMES[$name]}
     eval "check_tty mc_info $name $tty_name $redirect"
+    SCRIPT_EXIT_STATUS=$((SCRIPT_EXIT_STATUS+$?))
 else
     # otherwise, check Arduino first
     name="Arduino"
